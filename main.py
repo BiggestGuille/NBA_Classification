@@ -4,7 +4,7 @@ from src.modules import analytics
 
 def main():
     database.initialize_database()
-
+    analytics.get_analytics(2021)
 
 
 
