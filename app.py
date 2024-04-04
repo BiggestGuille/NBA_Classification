@@ -7,7 +7,7 @@ app = Flask(__name__, template_folder="src/templates")
 @app.route('/')
 def home():
     database.initialize_database()
-    # analytics.get_analytics(2021)
+    analytics.get_analytics(2021)
     clasificaciones = "clasificaciones" # PlaceHolder
     return render_template('index.html', clasificaciones=clasificaciones)
 
