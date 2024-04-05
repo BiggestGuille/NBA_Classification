@@ -35,6 +35,24 @@ def verify_table(table_name):
             # La tabla no existe
             return False
 
+# Función para CALCULAR la clasificación normal de la temporada dados los partidos de la misma
+# Devuelve un diccionario con el Id del equipo y el porcentaje de victorias
+def calculate_normal_classification(season: int):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Home ID",
+               SUM("Home Result") AS victories,
+               COUNT(*) AS total_matches
+        FROM nba_matches
+        WHERE season = ?
+        GROUP BY "Home Id"
+        """
+        cursor.execute(query, (season,))
+        results = cursor.fetchall()
+
+        return results
+
 # Función para crear la tabla de clasificación normal en la base de datos
 # normal_classification es un diccionario con el Id del equipo y el porcentaje de victorias
 def create_normal_classification_table(normal_classification, season):
@@ -64,28 +82,6 @@ def create_normal_classification_table(normal_classification, season):
 
         print(f"Los datos han sido insertados con éxito.")
 
-
-# Función para CALCULAR la clasificación normal de la temporada dados los partidos de la misma
-# Devuelve un diccionario con el Id del equipo y el porcentaje de victorias
-def calculate_normal_classification(season: int):
-    with get_database_connection() as db:
-        cursor = db.cursor()
-        query = """
-        SELECT "Home ID",
-               SUM("Home Result") AS victories,
-               COUNT(*) AS total_matches
-        FROM nba_matches
-        WHERE season = ?
-        GROUP BY "Home Id"
-        """
-        cursor.execute(query, (season,))
-        results = cursor.fetchall()
-        
-        # Calculate the victory percentage for each team
-        victory_percentage = {team: (victories / total_matches) for team, victories, total_matches in results}
-
-        return victory_percentage
-
 # Función para obtener la clasificación normal de la temporada
 def get_normal_classification(season: int):
     with get_database_connection() as db:
@@ -94,3 +90,18 @@ def get_normal_classification(season: int):
         data_normal_classification = cursor.fetchall()
     return data_normal_classification
 
+def get_victories_per_pair(season: int):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Home ID",
+               "Visitor ID",
+               COUNT(*) AS victories
+        FROM nba_matches
+        WHERE season = ? AND "Home Result" > "Visitor Result"
+        GROUP BY "Home Id", "Visitor Id"
+        """
+        cursor.execute(query, (season,))
+        results = cursor.fetchall()
+        print(results)
+        return results
