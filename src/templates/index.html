@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clasificaciones de la NBA</title>
-</head>
-<body>
-    <h1>Clasificaciones de la NBA</h1>
-    <pre>{{ clasificaciones }}</pre>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Clasificaciones de la NBA{% endblock %}
+
+{% block style %}
+    <style>
+        /* Estilos personalizados */
+        body {
+            background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
+            background-size: cover; /* Fondo por toda la página */
+        }
+        .container {
+            padding-top: 10vh; /* Ajusta el padding superior para centrar el contenido verticalmente */
+        }
+        .btn-custom {
+            margin: 10px; /* Espacio entre los botones */
+        }
+        .imagen-centrada {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px; /* JMargen para los botones */
+            width: 38%; /* Tamaño imagen */
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <h1>Clasificaciones de la NBA</h1>
+        <p class="lead">¿Son realmente justas?</p>
+        <img src="../static/images/basket_index.webp" class="imagen-centrada img-fluid" alt="Imagen descriptiva">
+        <div>
+            <a href="pagina1.html" class="btn btn-light btn-custom">Explicación del problema</a>
+            <a href="pagina2.html" class="btn btn-dark btn-custom">Ver datos analizados</a>
+        </div>
+    </div>
+{% endblock %}
