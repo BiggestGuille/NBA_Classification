@@ -1,6 +1,7 @@
 from . import database
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 def get_analytics(season: int):
 
@@ -83,10 +84,15 @@ def calculate_new_classification(season: int):
         # Método de las potencias
         perron_vector = power_method(matrix_iter, initial_vector)
         # Redondear el resultado a 6 decimales
-        perron_vector = np.round(perron_vector, decimals=6)
+        perron_vector = np.round(perron_vector, decimals=5)
+
         """
-        # Se obtiene el vector de Perron
-        print("\nVector de Perron: ", perron_vector, " en ", iterations, " iteraciones.")
+        # Comprobación con un vector aleatorio, debería dar el mismo resultado
+        vector_random = [random.randint(0, 100) for _ in range(30)]
+        perron_vector2 = power_method(matrix_iter, vector_random)
+        perron_vector2 = np.round(perron_vector2, decimals=5)
+        comparacion = perron_vector == perron_vector2
+        print(comparacion)
         """
 
         # Se enlaza el resultado para obtener el ranking de los equipos
@@ -147,7 +153,7 @@ def show_matrix(matrix, teams):
     plt.show()  
 
 # Ejecuta el método de las potencias para calcular el vector de Perron
-def power_method(matrix, initial_vector, tol=1e-5, max_iterations=1000):
+def power_method(matrix, initial_vector, tol=1e-7, max_iterations=1000):
 
     lambda_old = 0.0
     vector_iter = np.copy(initial_vector)
