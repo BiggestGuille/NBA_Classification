@@ -82,6 +82,33 @@ def create_normal_classification_table(normal_classification, season):
 
         print(f"Los datos han sido insertados con éxito.")
 
+def create_new_classification_table(new_classification, season):
+    with get_database_connection() as db:
+        # Crear la tabla
+        cursor = db.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS nba_new_classification (
+            "Team Id" INTEGER PRIMARY KEY,
+            Season INTEGER NOT NULL,
+            "Quality Percentage" REAL NOT NULL,
+            FOREIGN KEY("Team Id") REFERENCES nba_teams(id)
+        );
+        ''')
+        db.commit()
+        print(f"La tabla  ha sido creada con éxito.")
+
+        # Introducir los datos
+        # Insertar o actualizar los datos en la tabla
+        for team_id, quality_percentage in new_classification.items():
+            # Sentencia SQL para insertar cada fila
+            query = "INSERT INTO nba_new_classification ([Team Id], season, [Quality Percentage]) VALUES (?, ?, ?)"
+            data = (team_id, season, quality_percentage)
+            # Ejecutar la consulta
+            cursor.execute(query, data)
+            db.commit()
+
+        print(f"Los datos han sido insertados con éxito.")
+
 # Función para obtener la clasificación normal de la temporada
 def get_normal_classification(season: int):
     with get_database_connection() as db:
@@ -90,12 +117,20 @@ def get_normal_classification(season: int):
         data_normal_classification = cursor.fetchall()
     return data_normal_classification
 
+# Función para obtener la clasificación según la calidad de victorias de la temporada
+def get_new_classification(season: int):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM nba_new_classification WHERE season = ?", (season,))
+        data_normal_classification = cursor.fetchall()
+    return data_normal_classification
+
 # Función para obtener los equipos de la NBA
 def get_teams():
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT "Team Name" FROM nba_teams
+        SELECT "Team Name", Id FROM nba_teams
         """
         cursor.execute(query)
         teams = cursor.fetchall()
@@ -126,3 +161,31 @@ def get_victories_per_pair(season: int):
         cursor.execute(query, (season,))
         results = cursor.fetchall()
     return results
+
+# Función para verificar si hay datos de una temporada en una tabla
+def check_season_data(table_name, season):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = f"SELECT COUNT(*) FROM {table_name} WHERE season = {season}"
+        cursor.execute(query)
+        result = cursor.fetchone()
+    # Devuelve True si hay datos, False en caso contrario
+    return result[0] > 0  
+
+# Función para comprobar que el Quality Percentage es correcto
+def check_quality_percentage():
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT SUM("Quality Percentage") FROM nba_new_classification
+        """
+        cursor.execute(query)
+        result = cursor.fetchone()
+    return result[0]
+
+
+
+
+
+
+
