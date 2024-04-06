@@ -90,18 +90,39 @@ def get_normal_classification(season: int):
         data_normal_classification = cursor.fetchall()
     return data_normal_classification
 
+# Función para obtener los equipos de la NBA
+def get_teams():
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Team Name" FROM nba_teams
+        """
+        cursor.execute(query)
+        teams = cursor.fetchall()
+    return teams
+
+# Función para obtener las victorias por pareja de equipos
 def get_victories_per_pair(season: int):
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT "Home ID",
-               "Visitor ID",
-               COUNT(*) AS victories
-        FROM nba_matches
-        WHERE season = ? AND "Home Result" > "Visitor Result"
-        GROUP BY "Home Id", "Visitor Id"
+        SELECT 
+            home."Team Name" AS home_team_name,
+	        visitor."Team Name" AS visitor_team_name,
+	        SUM(matches."Home Result") AS home_wins, 
+            SUM(matches."Visitor Result") AS visitor_wins
+        FROM 
+            nba_teams home
+        CROSS JOIN
+	        nba_teams visitor
+        LEFT JOIN
+            nba_matches matches ON (home.id = matches."Home Id" AND visitor.id = matches."Visitor Id" AND matches.season = ?)
+        WHERE 
+            home.id != visitor.id
+        GROUP BY 
+            home."Team Name", 
+            visitor."Team Name"
         """
         cursor.execute(query, (season,))
         results = cursor.fetchall()
-        print(results)
-        return results
+    return results
