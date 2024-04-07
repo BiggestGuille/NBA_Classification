@@ -7,7 +7,9 @@ app = Flask(__name__, template_folder="src/templates",static_folder='src/static'
 @app.route('/')
 def home():
     database.initialize_database()
-    analytics.get_analytics(2021)
+    resultado_analytics = analytics.get_analytics(2021)
+    if resultado_analytics is None:
+        return render_template('not_found.html'), 404
     clasificaciones = "clasificaciones" # PlaceHolder
     return render_template('index.html', clasificaciones=clasificaciones)
 
