@@ -48,13 +48,13 @@ def check_season_data(table_name, season):
     return result[0] > 0  
 
 # Función para comprobar que el Quality Percentage es correcto
-def check_quality_percentage():
+def check_quality_percentage(season: int):
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT SUM("Quality Percentage") FROM nba_new_classification
+        SELECT SUM("Quality Percentage") FROM nba_new_classification WHERE Season = ?
         """
-        cursor.execute(query)
+        cursor.execute(query, (season,))
         result = cursor.fetchone()
     return result[0]
 
@@ -125,7 +125,7 @@ def get_normal_classification(season: int):
         cursor = db.cursor()
         # Realizar un JOIN entre nba_normal_classification y nba_teams para obtener Team Name y Victory Percentage
         cursor.execute("""
-            SELECT t."Team Name", nc."Victory Percentage"
+            SELECT t."Team Name", nc."Victory Percentage", t.Conference, t.Logo
             FROM nba_normal_classification AS nc
             JOIN nba_teams AS t ON nc."Team Id" = t.Id
             WHERE nc.Season = ?
@@ -168,7 +168,7 @@ def get_new_classification(season: int):
         cursor = db.cursor()
         # Realizar un JOIN entre nba_new_classification y nba_teams para obtener Team Name y Quality Percentage
         cursor.execute("""
-            SELECT t."Team Name", nc."Quality Percentage"
+            SELECT t."Team Name", nc."Quality Percentage", t.Conference, t.Logo
             FROM nba_new_classification AS nc
             JOIN nba_teams AS t ON nc."Team Id" = t.Id
             WHERE nc.Season = ?

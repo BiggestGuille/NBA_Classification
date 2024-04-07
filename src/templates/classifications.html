@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Clasificaciones{% endblock %}
+
+{% block style %}
+
+<style>
+    body {
+            background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
+            background-size: cover; /* Fondo por toda la página */
+    }
+    .container {
+        text-align: center;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Título de la Comparación</h1>
+    <h2 class="mb-3">Subtítulo</h2>
+    
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="comparisonTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccione Comparación
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
+                    <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Total</a></li>
+                    <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por Conferencia</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="seasonDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Seleccione Temporada
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
+                    <li><a class="dropdown-item" href="#" data-value="2021">2021</a></li>
+                    <li><a class="dropdown-item" href="#" data-value="2022">2022</a></li>
+                    <!-- Más temporadas aquí -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Clasificación Normal
+                </div>
+                <div class="card-body">
+                    <!-- Aquí se insertará la tabla normal -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Nueva Clasificación
+                </div>
+                <div class="card-body">
+                    <!-- Aquí se insertará la nueva clasificación -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Este contenedor solo se mostrará si se selecciona 'Por Conferencia' -->
+    <div class="conference-table d-none">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Conferencia Este</h4>
+                <!-- Tabla de clasificación normal para Conferencia Este -->
+            </div>
+            <div class="col-md-6">
+                <h4>Conferencia Este Nueva</h4>
+                <!-- Tabla de nueva clasificación para Conferencia Este -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Conferencia Oeste</h4>
+                <!-- Tabla de clasificación normal para Conferencia Oeste -->
+            </div>
+            <div class="col-md-6">
+                <h4>Conferencia Oeste Nueva</h4>
+                <!-- Tabla de nueva clasificación para Conferencia Oeste -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('.comparison-choice').forEach(item => {
+            item.addEventListener('click', event => {
+                let value = item.getAttribute('data-value');
+                if (value === 'conference') {
+                    document.querySelector('.conference-table').classList.remove('d-none');
+                    document.querySelectorAll('.row > .col-md-6 > .card').forEach(card => {
+                        card.classList.add('d-none');
+                    });
+                } else {
+                    document.querySelector('.conference-table').classList.add('d-none');
+                    document.querySelectorAll('.row > .col-md-6 > .card').forEach(card => {
+                        card.classList.remove('d-none');
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

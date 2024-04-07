@@ -1,4 +1,5 @@
 from . import database
+from flask import jsonify
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -30,8 +31,12 @@ def get_analytics(season: int):
     # Si hay empates, necesitamos especificar la clasificación de desempate
     norm_classif_tie_breaker = check_draws(norm_classif_list, season)
     # Se ordena la clasificación de nuevo con los desempates
-    norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[2]), reverse=True)
-
+    norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
+    
+    norm_classif_json = [
+        {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
+        for team in norm_classif_sorted
+    ]
 
     # Se recogen las clasificaciones nuevas de la temporada (según método estudiado)
 
@@ -47,16 +52,22 @@ def get_analytics(season: int):
     # Se obtiene la clasificación nueva de la temporada para su posterior utilización
     data_new_classification = database.get_new_classification(season)
     data_new_classification = [list(tupla) for tupla in data_new_classification]
+    new_classif_sorted = sorted(data_new_classification, key=lambda x: x[1], reverse=True)
+    new_classif_json = [
+        {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
+        for team in new_classif_sorted
+    ]
+
+    return jsonify(norm_classif_json), jsonify(new_classif_json)
+
     """
     # Comprobar que el Quality Percentage es correcto (debe ser 1 con algún decimal de precisión)
-    print(database.check_quality_percentage())
+    print(database.check_quality_percentage(season))
 
     # Primera prueba de que, en efecto, la clasificación cambia
     print(norm_classif_sorted)
     print(new_classif_sorted)
     """
-
-    new_classif_sorted = sorted(data_new_classification, key=lambda x: x[1], reverse=True)
 
     """
     with open('classifications.csv', mode='w', newline='') as file:
@@ -87,16 +98,16 @@ def check_draws(classification, season):
                     victories_team1 += visitor_victories
             # Si el equipo 1 tiene más victorias, se le asigna un valor mayor
             if victories_team1 > victories_team2:
-                classification[i][2] = 1
+                classification[i][4] = 1
             elif victories_team1 < victories_team2:
-                classification[i+1][2] = 1
+                classification[i+1][4] = 1
             else:
                 division_from_team1 = [team[0] for team in database.get_team_whole_division(team1)]
                 division_from_team2 = [team[0] for team in database.get_team_whole_division(team2)]
                 if division_from_team1.index(team1) == 0 and division_from_team2.index(team2) != 0:
-                    classification[i][2] = 1
+                    classification[i][4] = 1
                 elif division_from_team2.index(team2) == 0 and division_from_team1.index(team1) != 0:
-                    classification[i+1][2] = 1
+                    classification[i+1][4] = 1
                 else:
                     print("SE HA LLEGADO AL LÍMITE DE DESEMPATE. NO SE PUEDE RESOLVER.")
     return classification
@@ -122,13 +133,7 @@ def calculate_new_classification(season: int):
         victories_matrix[i, j] += local_victories
         victories_matrix[j, i] += visitor_victories
     
-    """
     # show_matrix(victories_matrix, teams)
-    
-    # Convertimos la matriz de victorias en estocásticas dividiendo entre el número de partidos jugados
-    total_matches = 72 if season == 2020 else 82
-    victories_matrix = victories_matrix / total_matches
-    """
 
     # Se comprueba que se cumple el teorema de Perron-Frobenius
     # de manera que el método de las potencias converge al vector de Perron
