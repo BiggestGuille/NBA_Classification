@@ -98,7 +98,8 @@ def create_normal_classification_table(normal_classification, season):
         cursor = db.cursor()
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS nba_normal_classification (
-            "Team Id" INTEGER PRIMARY KEY,
+            "Key" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "Team Id" INTEGER,
             Season INTEGER NOT NULL,
             "Victory Percentage" REAL NOT NULL,
             FOREIGN KEY("Team Id") REFERENCES nba_teams(id)
@@ -141,7 +142,8 @@ def create_new_classification_table(new_classification, season):
         cursor = db.cursor()
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS nba_new_classification (
-            "Team Id" INTEGER PRIMARY KEY,
+            "Key" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "Team Id" INTEGER,
             Season INTEGER NOT NULL,
             "Quality Percentage" REAL NOT NULL,
             FOREIGN KEY("Team Id") REFERENCES nba_teams(id)

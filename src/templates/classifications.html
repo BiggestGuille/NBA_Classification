@@ -6,11 +6,17 @@
 
 <style>
     body {
-            background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
-            background-size: cover; /* Fondo por toda la página */
+        background: url('../static/images/background_plain.webp') no-repeat center center fixed;
+        background-size: cover;
+        /* Fondo por toda la página */
     }
+
     .container {
         text-align: center;
+    }
+
+    .different {
+        background-color: #ff0000;
     }
 </style>
 
@@ -19,104 +25,335 @@
 {% block content %}
 
 <div class="container mt-5">
-    <h1 class="mb-4">Título de la Comparación</h1>
-    <h2 class="mb-3">Subtítulo</h2>
-    
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="comparisonTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    Seleccione Comparación
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
-                    <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Total</a></li>
-                    <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por Conferencia</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="seasonDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    Seleccione Temporada
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
-                    <li><a class="dropdown-item" href="#" data-value="2021">2021</a></li>
-                    <li><a class="dropdown-item" href="#" data-value="2022">2022</a></li>
-                    <!-- Más temporadas aquí -->
-                </ul>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    Clasificación Normal
+    <h1 class="mb-4">Comparación de Clasificaciones</h1>
+    <h4 class="mb-3">Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="seasonDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Seleccione Temporada
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2015">2015</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2016">2016</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2017">2017</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2018">2018</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2020">2020</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2021">2021</a></li>
+                        <li><a class="dropdown-item season-choice" href="#" data-value="2022">2022</a></li>
+                    </ul>
                 </div>
-                <div class="card-body">
-                    <!-- Aquí se insertará la tabla normal -->
+            </div>
+
+            <div class="col-md-6">
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="comparisonTypeDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Seleccione Tipo de Comparación
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
+                        <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Total</a></li>
+                        <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por
+                                Conferencia</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    Nueva Clasificación
+
+        <div class="row" id="totalView">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Clasificación Normal
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para vista "Total" - Clasificación Normal -->
+                        <table class="table" id="norm_classif_table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team in norm_classif %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <!-- Aquí se insertará la nueva clasificación -->
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Nueva Clasificación
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para vista "Total" - Nueva Clasificación -->
+                        <table class="table" id="new_classif_table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team in new_classif %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Este contenedor solo se mostrará si se selecciona 'Por Conferencia' -->
-    <div class="conference-table d-none">
-        <div class="row">
+
+
+        <!--Si se elige por conferencia se mostrarán cuatro tablas, dependiendo de si el equipo pertenece al Este o al Oeste-->
+        <!--Necesitamos un contador para la posición porque loop.index no sirve-->
+        <!--El contador (counter) debe ser una lista para poder ser modificado dentro del bucle-->
+        <div class="row d-none" id="conferenceView">
             <div class="col-md-6">
-                <h4>Conferencia Este</h4>
-                <!-- Tabla de clasificación normal para Conferencia Este -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        Conferencia Este - Clasificación Normal
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para Conferencia Este - Clasificación Normal -->
+                        <table class="table" id="norm_classif_east">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set counter = [0] %}
+                                {% for team in norm_classif %}
+                                {% if team.conference == "East" %}
+                                {% if counter.append(counter.pop() + 1) %}{% endif %}
+                                <tr>
+                                    <td>{{ counter[0] }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
-                <h4>Conferencia Este Nueva</h4>
-                <!-- Tabla de nueva clasificación para Conferencia Este -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        Conferencia Este - Nueva Clasificación
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para Conferencia Este - Nueva Clasificación -->
+                        <table class="table" id="new_classif_east">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set counter = [0] %}
+                                {% for team in new_classif %}
+                                {% if team.conference == "East" %}
+                                {% if counter.append(counter.pop() + 1) %}{% endif %}
+                                <tr>
+                                    <td>{{ counter[0] }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Conferencia Oeste - Clasificación Normal
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para Conferencia Oeste - Clasificación Normal -->
+                        <table class="table" id="norm_classif_west">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set counter = [0] %}
+                                {% for team in norm_classif %}
+                                {% if team.conference == "West" %}
+                                {% if counter.append(counter.pop() + 1) %}{% endif %}
+                                <tr>
+                                    <td>{{ counter[0] }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Conferencia Oeste - Nueva Clasificación
+                    </div>
+                    <div class="card-body">
+                        <!-- Contenido para Conferencia Oeste - Nueva Clasificación -->
+                        <table class="table" id="new_classif_west">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Equipo</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set counter = [0] %}
+                                {% for team in new_classif %}
+                                {% if team.conference == "West" %}
+                                {% if counter.append(counter.pop() + 1) %}{% endif %}
+                                <tr>
+                                    <td>{{ counter[0] }}</td>
+                                    <td>{{ team.name }}</td>
+                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Conferencia Oeste</h4>
-                <!-- Tabla de clasificación normal para Conferencia Oeste -->
-            </div>
-            <div class="col-md-6">
-                <h4>Conferencia Oeste Nueva</h4>
-                <!-- Tabla de nueva clasificación para Conferencia Oeste -->
-            </div>
-        </div>
-    </div>
+
 
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.querySelectorAll('.comparison-choice').forEach(item => {
-            item.addEventListener('click', event => {
-                let value = item.getAttribute('data-value');
+
+    // Cambia la vista de tarjetas según el dropdown de comparaciones
+    document.addEventListener('DOMContentLoaded', () => {
+        const comparisonChoices = document.querySelectorAll('.comparison-choice');
+        comparisonChoices.forEach(choice => {
+            choice.addEventListener('click', event => {
+                event.preventDefault();
+                const value = choice.getAttribute('data-value');
                 if (value === 'conference') {
-                    document.querySelector('.conference-table').classList.remove('d-none');
-                    document.querySelectorAll('.row > .col-md-6 > .card').forEach(card => {
-                        card.classList.add('d-none');
-                    });
+                    document.getElementById('totalView').classList.add('d-none');
+                    document.getElementById('conferenceView').classList.remove('d-none');
                 } else {
-                    document.querySelector('.conference-table').classList.add('d-none');
-                    document.querySelectorAll('.row > .col-md-6 > .card').forEach(card => {
-                        card.classList.remove('d-none');
-                    });
+                    document.getElementById('totalView').classList.remove('d-none');
+                    document.getElementById('conferenceView').classList.add('d-none');
                 }
             });
         });
     });
+
+
+    // Cuando se elige un tipo de comparación, se actualiza el dropdown
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownMenu = document.getElementById('comparisonTypeDropdown');
+        const seasonChoices = document.querySelectorAll('.comparison-choice');
+
+        seasonChoices.forEach(function (choice) {
+            choice.addEventListener('click', function () {
+                dropdownMenu.textContent = choice.textContent;
+            });
+        });
+    });
+
+    // Cuando se elige una temporada, se actualiza el dropdown y las tablas
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownMenu = document.getElementById('seasonDropdown');
+        const seasonChoices = document.querySelectorAll('.season-choice');
+
+        seasonChoices.forEach(function (choice) {
+            choice.addEventListener('click', function () {
+                event.preventDefault();
+                dropdownMenu.textContent = choice.textContent;
+                const selectedSeason = choice.getAttribute('data-value');
+                // Función que actualiza las tablas, pasando la temporada seleccionada
+                fetchClassifications(selectedSeason);
+
+            });
+        });
+    });
+
+    // Actualiza las tablas de clasificación al cambiar la temporada del dropdown
+    function fetchClassifications(season) {
+        fetch(`/classifications?season=${season}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Asumiendo que tienes funciones updateTable() para actualizar cada tabla
+                //console.log(data);
+                updateTable('norm_classif_table', data.norm_classif, "All"); // Actualiza la tabla normal
+                updateTable('new_classif_table', data.new_classif, "All"); // Actualiza la nueva tabla
+
+                updateTable('norm_classif_east', data.new_classif, "East"); // Actualiza la tabla normal de la conferencia este
+                updateTable('new_classif_east', data.new_classif, "East"); // Actualiza la tabla nueva de la conferencia este
+                updateTable('norm_classif_west', data.new_classif, "West"); // Actualiza la tabla normal de la conferencia oeste
+                updateTable('new_classif_west', data.new_classif, "West"); // Actualiza la tabla nueva de la conferencia oeste
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    //Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
+    function updateTable(tableId, classifData, conference) {
+        const tableBody = document.querySelector(`#${tableId} tbody`);
+        tableBody.innerHTML = ''; // Limpia la tabla actual
+
+
+        classifData.forEach((team, index) => {
+            if (conference === `${team.conference}` || conference === "All") {
+                // Usamos index + 1 para comenzar la numeración desde 1 en lugar de 0
+                const position = index + 1;
+                const row = `<tr>
+                            <td>${position}</td>
+                            <td>${team.name}</td>
+                            <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                        </tr>`;
+                tableBody.innerHTML += row; // Agrega la fila a la tabla
+            }
+        });
+    }
+
 </script>
 
 {% endblock %}

@@ -58,7 +58,7 @@ def get_analytics(season: int):
         for team in new_classif_sorted
     ]
 
-    return jsonify(norm_classif_json), jsonify(new_classif_json)
+    return norm_classif_json, new_classif_json
 
     """
     # Comprobar que el Quality Percentage es correcto (debe ser 1 con algún decimal de precisión)
