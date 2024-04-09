@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Explicación{% endblock %}
+
+{% block style %}
+<style>
+    /* Estilos personalizados */
+    body, html {
+        height: 100%;
+        margin: 0;
+        background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
+        background-size: cover; /* Fondo por toda la página */
+    }
+    .container {
+        text-align: center;
+        color: #333;
+    }
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <h1>Miau</h1>
+        <p>Lo sentimos, la página que buscas no existe.</p>
+        <a href="/" class="btn btn-dark">Volver a Inicio</a>
+    </div>
+</div>
+{% endblock %}

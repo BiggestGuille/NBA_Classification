@@ -19,7 +19,7 @@ def classifications():
     if not database_initialized:
         return redirect(url_for('home'))
     # Obtiene el parámetro 'season' de la consulta, con un valor por defecto si no se proporciona
-    season = request.args.get('season', default=2021, type=int)
+    season = request.args.get('season', default=2020, type=int)
     
     norm_classif, new_classif = analytics.get_analytics(season)
 
@@ -32,6 +32,12 @@ def classifications():
         return jsonify({'norm_classif': norm_classif, 'new_classif': new_classif})
     
     return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif)
+
+@app.route('/explanation')
+def explanation():
+    if not database_initialized:
+        return redirect(url_for('home'))
+    return render_template('explanation.html')
 
 # Manejador de error para el error 404 (Página no encontrada)
 @app.errorhandler(404)
