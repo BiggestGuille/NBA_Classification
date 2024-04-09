@@ -130,6 +130,7 @@ def get_normal_classification(season: int):
             FROM nba_normal_classification AS nc
             JOIN nba_teams AS t ON nc."Team Id" = t.Id
             WHERE nc.Season = ?
+            ORDER BY nc."Victory Percentage" DESC
         """, (season,))
         data_normal_classification = cursor.fetchall()
     return data_normal_classification
@@ -174,6 +175,7 @@ def get_new_classification(season: int):
             FROM nba_new_classification AS nc
             JOIN nba_teams AS t ON nc."Team Id" = t.Id
             WHERE nc.Season = ?
+            ORDER BY nc."Quality Percentage" DESC
         """, (season,))
         data_new_classification = cursor.fetchall()
     return data_new_classification
@@ -217,18 +219,58 @@ def get_victories_per_pair(season: int):
         results = cursor.fetchall()
     return results
 
-
-# Función para saber si un equipo es campeón de división
-def get_team_whole_division(team_name):
+#Función para obtener la división de un equipo
+def get_team_division(team_name):
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT "Team Name" FROM nba_teams WHERE Division = (SELECT Division FROM nba_teams WHERE "Team Name" = ?)
+        SELECT Division FROM nba_teams WHERE "Team Name" = ?
+        """
+        cursor.execute(query, (team_name,))
+        result = cursor.fetchone()
+    return result[0]
+
+#Función para obtener la conferencia de un equipo
+def get_team_conference(team_name):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT Conference FROM nba_teams WHERE "Team Name" = ?
+        """
+        cursor.execute(query, (team_name,))
+        result = cursor.fetchone()
+    return result[0]
+
+# Función para devolver todos los equipos de la misma división que otro equipo
+def get_team_whole_division(team_name, season):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+            SELECT 
+                nt."Team Name"
+            FROM 
+                nba_teams nt
+            JOIN 
+                nba_normal_classification nc ON nt."Id" = nc."Team Id"
+            WHERE 
+                nt.Division = (SELECT Division FROM nba_teams WHERE "Team Name" = ?)
+                AND nc.Season = ?       
+            ORDER BY nc."Victory Percentage" DESC
+            """
+        cursor.execute(query, (team_name, season))
+        result = cursor.fetchall()
+    return result
+
+# Función para devolver todos los equipos de la misma conferencia que otro equipo
+def get_team_whole_conference(team_name):
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Team Name" FROM nba_teams WHERE Conference = (SELECT Conference FROM nba_teams WHERE "Team Name" = ?)
         """
         cursor.execute(query, (team_name,))
         result = cursor.fetchall()
     return result
-
 
 
 
