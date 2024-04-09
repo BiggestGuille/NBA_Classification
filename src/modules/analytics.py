@@ -28,11 +28,16 @@ def get_analytics(season: int):
     norm_classif_modified = sorted(norm_classif_modified, key=lambda x: x[1], reverse=True)
     # Pasamos a lista de listas para que no sea inmutable
     norm_classif_list = [list(tupla) for tupla in norm_classif_modified]
-    # Si hay empates, necesitamos especificar la clasificación de desempate
-    norm_classif_tie_breaker = check_draws(norm_classif_list, season)
     # Se ordena la clasificación de nuevo con los desempates
+    norm_classif_sorted = sorted(norm_classif_list, key=lambda x: (x[1], x[4]), reverse=True)
+    # Si hay empates, necesitamos especificar la clasificación de desempate
+    norm_classif_tie_breaker = check_draws(norm_classif_sorted, season)
+    # Se vuelve a ordenar la clasificación con los desempates
     norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
-    
+    #Por si hay triple empate, se vuelve a desempatar y ordenar
+    norm_classif_tie_breaker = check_draws(norm_classif_sorted, season)
+    norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
+
     norm_classif_json = [
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in norm_classif_sorted
@@ -84,7 +89,7 @@ def check_draws(classification, season):
         victories_team1 = 0
         victories_team2 = 0
         # Comparamos si el porcentaje actual es diferente al siguiente
-        if classification[i][1] == classification[i + 1][1]:
+        if classification[i][1] == classification[i + 1][1] and classification[i][4] - classification[i + 1][4] <= 1:
             team1 = classification[i][0]
             team2 = classification[i + 1][0]
             victories_per_pair = database.get_victories_per_pair(season)
@@ -98,32 +103,38 @@ def check_draws(classification, season):
                     victories_team1 += visitor_victories
             # Si el equipo 1 tiene más victorias, se le asigna un valor mayor
             if victories_team1 > victories_team2:
-                classification[i][4] = 1
-                break
+                classification[i][4] += 1
+                continue
             elif victories_team1 < victories_team2:
-                classification[i+1][4] = 1
-                break
+                classification[i+1][4] += 1
+                continue
             else:
                 # Si el equipo X es líder de su división y el equipo Y no, se le asigna un valor mayor
                 division_from_team1 = [team[0] for team in database.get_team_whole_division(team1, season)]
                 division_from_team2 = [team[0] for team in database.get_team_whole_division(team2, season)]
                 if division_from_team1.index(team1) == 0 and division_from_team2.index(team2) != 0:
-                    classification[i][4] = 1
-                    break
+                    classification[i][4] += 1
+                    continue
                 elif division_from_team2.index(team2) == 0 and division_from_team1.index(team1) != 0:
-                    classification[i+1][4] = 1
-                    break
+                    classification[i+1][4] += 1
+                    continue
                 else:
 
                     # Equipo con mejor % de victorias contra rivales de la misma división (si el empate es entre equipos de la misma división)
                     victories_team1 = 0
                     victories_team2 = 0
+                    total_matches_team1 = 0
+                    total_matches_team2 = 0
                     if database.get_team_division(team1) == database.get_team_division(team2):
                         victories_per_pair = database.get_victories_per_pair(season)
                         # Buscamos los partidos entre los dos equipos
                         for home_team, visitor_team, local_victories, visitor_victories in victories_per_pair:
                             # Solo sumar victorias si son equipos de su división
                             if home_team in division_from_team1 and visitor_team in division_from_team1: 
+                                if team1 == home_team or team1 == visitor_team:
+                                    total_matches_team1 += local_victories + visitor_victories
+                                if team2 == home_team or team2 == visitor_team:
+                                    total_matches_team2 += local_victories + visitor_victories
                                 if team1 == home_team:
                                     victories_team1 += local_victories
                                 elif team1 == visitor_team:
@@ -133,23 +144,31 @@ def check_draws(classification, season):
                                 elif team2 == visitor_team:
                                     victories_team2 += visitor_victories
                         # Si el equipo 1 tiene más victorias, se le asigna un valor mayor
-                        if victories_team1 > victories_team2:
-                            classification[i][4] = 1
-                            break
-                        elif victories_team1 < victories_team2:
-                            classification[i+1][4] = 1
-                            break
+                        if victories_team1/total_matches_team1 > victories_team2/total_matches_team2:
+                            classification[i][4] += 1
+
+                            continue
+                        elif victories_team1/total_matches_team1 < victories_team2/total_matches_team2:
+                            classification[i+1][4] += 1
+                            continue
 
                     # Equipo con mejor % de victorias contra rivales de la misma conferencia (si el empate es entre equipos de la misma conferencia)
                     victories_team1 = 0
                     victories_team2 = 0
-                    conference_from_team1 = database.get_team_whole_conference(team1)
+                    total_matches_team1 = 0
+                    total_matches_team2 = 0
+                    conference_from_team1 = [team[0] for team in database.get_team_whole_conference(team1)]
+
                     if database.get_team_conference(team1) == database.get_team_conference(team2):
                         victories_per_pair = database.get_victories_per_pair(season)
                         # Buscamos los partidos entre los dos equipos
                         for home_team, visitor_team, local_victories, visitor_victories in victories_per_pair:
                             # Solo sumar victorias si son equipos de su conferencia
                             if home_team in conference_from_team1 and visitor_team in conference_from_team1: 
+                                if team1 == home_team or team1 == visitor_team:
+                                    total_matches_team1 += local_victories + visitor_victories
+                                if team2 == home_team or team2 == visitor_team:
+                                    total_matches_team2 += local_victories + visitor_victories
                                 if team1 == home_team:
                                     victories_team1 += local_victories
                                 elif team1 == visitor_team:
@@ -159,12 +178,12 @@ def check_draws(classification, season):
                                 elif team2 == visitor_team:
                                     victories_team2 += visitor_victories
                         # Si el equipo 1 tiene más victorias, se le asigna un valor mayor
-                        if victories_team1 > victories_team2:
-                            classification[i][4] = 1
-                            break
-                        elif victories_team1 < victories_team2:
-                            classification[i+1][4] = 1
-                            break
+                        if victories_team1/total_matches_team1 > victories_team2/total_matches_team2:
+                            classification[i][4] += 1
+                            continue
+                        elif victories_team1/total_matches_team1 < victories_team2/total_matches_team2:
+                            classification[i+1][4] += 1
+                            continue
 
                         print("NO SE PUEDE DESEMPATAR")
 

@@ -29,7 +29,7 @@
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" id="seasonDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        2020
+                        2021
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
                         <li><a class="dropdown-item season-choice" href="#" data-value="2015">2015</a></li>
@@ -318,14 +318,14 @@
             .then(response => response.json())
             .then(data => {
                 // Asumiendo que tienes funciones updateTable() para actualizar cada tabla
-                //console.log(data);
+                console.log(data);
                 updateTable('norm_classif_table', data.norm_classif, "All"); // Actualiza la tabla normal
                 updateTable('new_classif_table', data.new_classif, "All"); // Actualiza la nueva tabla
 
-                updateTable('norm_classif_east', data.new_classif, "East"); // Actualiza la tabla normal de la conferencia este
-                updateTable('new_classif_east', data.new_classif, "East"); // Actualiza la tabla nueva de la conferencia este
-                updateTable('norm_classif_west', data.new_classif, "West"); // Actualiza la tabla normal de la conferencia oeste
-                updateTable('new_classif_west', data.new_classif, "West"); // Actualiza la tabla nueva de la conferencia oeste
+                updateTableConference('norm_classif_east', data.norm_classif, "East"); // Actualiza la tabla normal de la conferencia este
+                updateTableConference('new_classif_east', data.new_classif, "East"); // Actualiza la tabla nueva de la conferencia este
+                updateTableConference('norm_classif_west', data.norm_classif, "West"); // Actualiza la tabla normal de la conferencia oeste
+                updateTableConference('new_classif_west', data.new_classif, "West"); // Actualiza la tabla nueva de la conferencia oeste
             })
             .catch(error => console.error('Error:', error));
     }
@@ -335,13 +335,31 @@
         const tableBody = document.querySelector(`#${tableId} tbody`);
         tableBody.innerHTML = ''; // Limpia la tabla actual
 
+        classifData.forEach((team, index) => {
+            // Usamos index + 1 para comenzar la numeración desde 1 en lugar de 0
+            const position = index + 1;
+            const row = `<tr>
+                            <td>${position}</td>
+                            <td>${team.name}</td>
+                            <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                        </tr>`;
+            tableBody.innerHTML += row; // Agrega la fila a la tabla
+        });
+    }
+
+    //Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
+    //Especial para tablas de conferencia
+    function updateTableConference(tableId, classifData, conference) {
+        const tableBody = document.querySelector(`#${tableId} tbody`);
+        tableBody.innerHTML = ''; // Limpia la tabla actual
+        let contador = 0;
 
         classifData.forEach((team, index) => {
-            if (conference === `${team.conference}` || conference === "All") {
+            if (conference === `${team.conference}`) {
                 // Usamos index + 1 para comenzar la numeración desde 1 en lugar de 0
-                const position = index + 1;
+                contador++; 
                 const row = `<tr>
-                            <td>${position}</td>
+                            <td>${contador}</td>
                             <td>${team.name}</td>
                             <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
                         </tr>`;

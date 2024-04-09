@@ -19,7 +19,7 @@ def classifications():
     if not database_initialized:
         return redirect(url_for('home'))
     # Obtiene el parámetro 'season' de la consulta, con un valor por defecto si no se proporciona
-    season = request.args.get('season', default=2020, type=int)
+    season = request.args.get('season', default=2021, type=int)
     
     norm_classif, new_classif = analytics.get_analytics(season)
 
