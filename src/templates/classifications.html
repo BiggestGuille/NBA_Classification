@@ -47,7 +47,7 @@
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" id="comparisonTypeDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Total
+                        Por Conferencia
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
                         <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Total</a></li>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="row" id="totalView">
+        <div class="row d-none" id="totalView">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
@@ -121,7 +121,7 @@
         <!--Si se elige por conferencia se mostrarán cuatro tablas, dependiendo de si el equipo pertenece al Este o al Oeste-->
         <!--Necesitamos un contador para la posición porque loop.index no sirve-->
         <!--El contador (counter) debe ser una lista para poder ser modificado dentro del bucle-->
-        <div class="row d-none" id="conferenceView">
+        <div class="row" id="conferenceView">
             <div class="col-md-6">
                 <div class="card" style="margin-bottom: 20px;">
                     <div class="card-header">
