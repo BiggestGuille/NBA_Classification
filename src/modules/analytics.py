@@ -141,13 +141,14 @@ def check_draws(classification, season):
     
                     # Si no hay desempate...o si no son de la misma división...
                     # Ganará el equipo con mejor % de victorias contra rivales de la misma conferencia (si el empate es entre equipos de la misma conferencia)
-                    conference_from_team1 = [team[0] for team in database.get_team_whole_conference(team1)]
+                    conference_from_team1 = database.get_team_whole_conference(team1, season)
+                    conference_from_team2 = database.get_team_whole_conference(team2, season)
                     if database.get_team_conference(team1) == database.get_team_conference(team2):
                         for team_in_conference in conference_from_team1:
-                            victories_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_conference)]
-                            victories_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_conference)]
-                            total_matches_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_conference)] + victories_matrix[teams_names.index(team_in_conference), teams_names.index(team1)]
-                            total_matches_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_conference)] + victories_matrix[teams_names.index(team_in_conference), teams_names.index(team2)]
+                            victories_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_conference[0])]
+                            victories_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_conference[0])]
+                            total_matches_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_conference[0])] + victories_matrix[teams_names.index(team_in_conference[0]), teams_names.index(team1)]
+                            total_matches_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_conference[0])] + victories_matrix[teams_names.index(team_in_conference[0]), teams_names.index(team2)]
                         
                         if victories_team1/total_matches_team1 > victories_team2/total_matches_team2:
                             classification[i][4] += 1
@@ -160,7 +161,51 @@ def check_draws(classification, season):
                         # print("El empate es entre dos equipos de distinta conferencia - No es relevante")
                         continue
                         
+                    # Si no hay desempate...
+                    # Ganará el equipo con mejor % de victorias contra rivales que están clasificados a play-off en tu misma conferencia
+                    # (es decir, del 1 al 8 de tu misma conferencia incluyendo aquellos empatados por debajo del octavo puesto)
+                    counter = 0
+                    teams_playoff_team1 = []
+                    victories_team1 = 0
+                    victories_team2 = 0
+                    total_matches_team1 = 0
+                    total_matches_team2 = 0
+
+                    for team in conference_from_team1:
+                        if len(teams_playoff_team1)>=8 and conference_from_team1[counter][1] != conference_from_team1[counter-1][1]:
+                            break
+                        else:
+                            teams_playoff_team1.append(team[0])
+                            counter += 1
+                    counter = 0
+                    teams_playoff_team2 = []
+                    for team in conference_from_team2:
+                        if len(teams_playoff_team2)>=8 and conference_from_team1[counter][1] != conference_from_team1[counter-1][1]:
+                            break
+                        else:
+                            teams_playoff_team2.append(team[0])
+                            counter += 1
+                    
+                    for team_in_playoff in teams_playoff_team1:
+                        if team_in_playoff != team1:
+                            victories_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_playoff)]
+                            total_matches_team1 += victories_matrix[teams_names.index(team1), teams_names.index(team_in_playoff)] + victories_matrix[teams_names.index(team_in_playoff), teams_names.index(team1)]
+
+                    for team_in_playoff in teams_playoff_team2:
+                        if team_in_playoff != team2:
+                            victories_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_playoff)]
+                            total_matches_team2 += victories_matrix[teams_names.index(team2), teams_names.index(team_in_playoff)] + victories_matrix[teams_names.index(team_in_playoff), teams_names.index(team2)]
+
+                    if victories_team1/total_matches_team1 > victories_team2/total_matches_team2:
+                        classification[i][4] += 1
+                        continue
+                    elif victories_team1/total_matches_team1 < victories_team2/total_matches_team2:
+                        classification[i+1][4] += 1
+                        continue
+
+
                     print("NECESITAS DESEMPATAR MÁS")
+
                     # Caso específico empate 2021
     #Resolver caso específico empate cuádruple 2015
     return classification

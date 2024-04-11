@@ -224,7 +224,7 @@ def get_team_division(team_name):
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT Division FROM nba_teams WHERE "Team Name" = ?
+        SELECT Division FROM nba_teams WHERE "Team Name" = ? 
         """
         cursor.execute(query, (team_name,))
         result = cursor.fetchone()
@@ -262,13 +262,22 @@ def get_team_whole_division(team_name, season):
     return result
 
 # Función para devolver todos los equipos de la misma conferencia que otro equipo
-def get_team_whole_conference(team_name):
+def get_team_whole_conference(team_name, season):
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT "Team Name" FROM nba_teams WHERE Conference = (SELECT Conference FROM nba_teams WHERE "Team Name" = ?)
+        SELECT 
+                nt."Team Name", nc."Victory Percentage"
+            FROM 
+                nba_teams nt
+            JOIN 
+                nba_normal_classification nc ON nt."Id" = nc."Team Id"
+            WHERE 
+                nt.Conference = (SELECT Conference FROM nba_teams WHERE "Team Name" = ?)
+                AND nc.Season = ?       
+            ORDER BY nc."Victory Percentage" DESC
         """
-        cursor.execute(query, (team_name,))
+        cursor.execute(query, (team_name, season))
         result = cursor.fetchall()
     return result
 
