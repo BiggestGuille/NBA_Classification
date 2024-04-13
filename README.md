@@ -10,16 +10,46 @@ This innovative approach not only introduces new insights into team performance 
 
 ## Setup 🔧
 
-### Requirements💻
+### Requirements 💻
 - Python 3.12+ (lower version could be used but 3.12 was used for development)
 - Docker
 
-### Installation💻 
+### Installation 💻 
 
-1. Clone the repository:
+Clone the repository:
    ```bash
    git clone https://github.com/BiggestGuille/NBA_Classification.git
    cd NBA_Classification
    ```
 
+### Running the application ▶️
+
+If you have Docker installed, you can now run the web application
+```bash
+   docker run -p 5000:5000 nba-classif-webapp
+```
+The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000) or [http://localhost:5000](http://localhost:5000).
+
+### Configuration for development 💻
+
+1. Create a virtual environment for managing dependencies and ensuring that your development environment is isolated from other Python projects:
+```bash
+   python -m venv venv   # Crea el entorno virtual
+   source venv/bin/activate     # Activa el entorno virtual en macOS/Linux
+   .\venv\Scripts\activate   # Activa el entorno virtual en Windows
+```
+2. Install all dependencies
+```bash
+   pip install -r requirements.txt
+```
+3. Run the application
+```bash
+   python app.py
+```
+
+If you use Docker, you could build the image from the Dockerfile and run the container:
+```bash
+docker build -t nba-classif-webapp .
+docker run -p 5000:5000 nba-classif-webapp
+```
 
