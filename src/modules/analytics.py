@@ -322,7 +322,6 @@ def check_draws(classification, season):
 
     return classification
 
-
 # Función para calcular la clasificación de la temporada según el método estudiado	
 def calculate_new_classification(season: int):
 
@@ -384,7 +383,6 @@ def get_victories_matrix(season: int):
         victories_matrix[j, i] += visitor_victories
     # show_matrix(victories_matrix, teams_names)
     return victories_matrix
-
 
 # Comprueba que la matriz es cuadrada, no negativa y primitiva
 def verify_perron_frobenius(matrix):
