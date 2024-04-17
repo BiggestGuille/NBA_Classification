@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import csv
 
+# Función que calcula u obtiene las clasificaciones tanto normales como nuevas de una temporada dada y hace todas las operaciones necesarias para ello
 def get_analytics(season: int):
 
     # Se recogen las clasificaciones normales de la temporada

@@ -59,7 +59,6 @@ def check_quality_percentage(season: int):
     return result[0]
 
 
-
 # Función para CALCULAR la clasificación normal de la temporada dados los partidos de la misma
 # Devuelve un diccionario con el Id del equipo y el porcentaje de victorias
 def calculate_normal_classification(season: int):
@@ -136,7 +135,8 @@ def get_normal_classification(season: int):
     return data_normal_classification
 
 
-
+# Función para crear la tabla de clasificación nueva en la base de datos
+# new_classification es un diccionario con el Id del equipo y el porcentaje de calidad de victorias
 def create_new_classification_table(new_classification, season):
     with get_database_connection() as db:
         # Crear la tabla
@@ -179,7 +179,6 @@ def get_new_classification(season: int):
         """, (season,))
         data_new_classification = cursor.fetchall()
     return data_new_classification
-
 
 
 # Función para obtener los equipos de la NBA
