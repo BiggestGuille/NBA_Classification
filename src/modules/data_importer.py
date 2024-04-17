@@ -72,7 +72,7 @@ def import_excel_to_database():
         # Inicialización del DataFrame vacío
         df_matches_all_seasons = pd.DataFrame()
         # Lista de temporadas
-        season_list = [2015, 2016, 2017, 2018, 2020, 2021, 2022]
+        season_list = [2015, 2016, 2017, 2018, 2020, 2021, 2022, 2023]
 
         for season in season_list:
 

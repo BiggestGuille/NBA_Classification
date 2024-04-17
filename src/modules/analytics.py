@@ -35,9 +35,6 @@ def get_analytics(season: int):
     norm_classif_tie_breaker = check_draws(norm_classif_sorted, season)
     norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
 
-    # Variable para almacenar si se ha encontrado el valor 3
-    encontrado = False
-
     norm_classif_json = [
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in norm_classif_sorted
@@ -108,6 +105,17 @@ def check_draws(classification, season):
                     classification[i+3][4] = 2
                     classification[i+2][4] = 1
                     classification[i+1][4] = 0
+                    continue
+
+            # Caso empate cuiádruple en el que sólo 3 equipos son de la misma conferencia. Se hará manualmente para la única temporada en que ocurre, 2023 pues no es prioridad.
+            if i < len(classification) - 3 and classification[i][1] == classification[i + 1][1] == classification[i + 2][1] == classification[i + 3][1]:
+                team3 = classification[i + 2][0]
+                team4 = classification[i + 3][0]
+                if database.get_team_conference(team1) == database.get_team_conference(team2) == database.get_team_conference(team4) and database.get_team_conference(team3) != database.get_team_conference(team1):
+                    classification[i+1][4] = 3
+                    classification[i+2][4] = 2
+                    classification[i+3][4] = 1
+                    classification[i][4] = 0
                     continue
 
             # Caso empate triple
@@ -378,9 +386,14 @@ def get_victories_matrix(season: int):
     for home_team, visitor_team, local_victories, visitor_victories in victories_per_pair:
         i = teams_names.index(home_team)
         j = teams_names.index(visitor_team)
+        # En 2023, hay algún emparejamiento que no se dió en uno de los sentidos
+        if local_victories is None or visitor_victories is None:
+            victories_matrix[i, j] += 0
+            victories_matrix[j, i] += 0
         # Asegúrate de sumar las victorias del equipo local cuando juega en casa y como visitante
-        victories_matrix[i, j] += local_victories
-        victories_matrix[j, i] += visitor_victories
+        else:
+            victories_matrix[i, j] += local_victories
+            victories_matrix[j, i] += visitor_victories
     # show_matrix(victories_matrix, teams_names)
     return victories_matrix
 
