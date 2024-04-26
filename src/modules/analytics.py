@@ -448,12 +448,12 @@ def power_method(matrix, initial_vector, tol=1e-7, max_iterations=1000):
         # Verifica la convergencia
         lambda_new = np.dot(vector_iter, matrix.dot(vector_iter))
         if np.abs(lambda_new - lambda_old) < tol:
-            print(f"Convergió después de {iterations+1} iteraciones.")
+            print(f"Converge después de {iterations+1} iteraciones.")
             return vector_iter
         
         lambda_old = lambda_new
         
-    print("No convergió.")
+    print("No converge.")
     return vector_iter
 
 
