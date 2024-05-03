@@ -21,15 +21,15 @@
 {% block content %}
 
 <div class="container mt-5">
-    <h1 class="mb-4">Comparación de Clasificaciones</h1>
-    <h4 class="mb-3">Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias</h2>
+    <h1 class="mb-4" data-aos="zoom-in">Comparación de Clasificaciones</h1>
+    <h4 class="mb-3" data-aos="zoom-in">Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias</h2>
 
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" id="seasonDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        2021
+                        2021-22
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
                         <li><a class="dropdown-item season-choice" href="#" data-value="2015">2015-16</a></li>
@@ -63,24 +63,30 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Clasificación Normal
+                        <strong>Clasificación Normal</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para vista "Total" - Clasificación Normal -->
-                        <table class="table" id="norm_classif_table">
+                        <table class="table" id="norm_classif_table" >
                             <thead>
                                 <tr>
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for team in norm_classif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ loop.index }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -91,24 +97,30 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Nueva Clasificación
+                        <strong>Clasificación Nueva</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para vista "Total" - Nueva Clasificación -->
-                        <table class="table" id="new_classif_table">
+                        <table class="table" id="new_classif_table" data-aos="flip-right">
                             <thead>
                                 <tr>
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for team in new_classif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ loop.index }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -126,7 +138,7 @@
             <div class="col-md-6">
                 <div class="card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        Conferencia Este - Clasificación Normal
+                        <strong>Clasificación Normal - Conferencia Este</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para Conferencia Este - Clasificación Normal -->
@@ -136,6 +148,7 @@
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,10 +156,15 @@
                                 {% for team in norm_classif %}
                                 {% if team.conference == "East" %}
                                 {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ counter[0] }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -158,7 +176,7 @@
             <div class="col-md-6">
                 <div class="card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        Conferencia Este - Nueva Clasificación
+                        <strong>Clasificación Nueva - Conferencia Este</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para Conferencia Este - Nueva Clasificación -->
@@ -168,6 +186,7 @@
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,10 +194,15 @@
                                 {% for team in new_classif %}
                                 {% if team.conference == "East" %}
                                 {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ counter[0] }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -193,7 +217,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Conferencia Oeste - Clasificación Normal
+                        <strong>Clasificación Normal - Conferencia Oeste</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para Conferencia Oeste - Clasificación Normal -->
@@ -203,6 +227,7 @@
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -210,10 +235,15 @@
                                 {% for team in norm_classif %}
                                 {% if team.conference == "West" %}
                                 {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ counter[0] }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -225,7 +255,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Conferencia Oeste - Nueva Clasificación
+                        <strong>Clasificación Nueva - Conferencia Oeste</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para Conferencia Oeste - Nueva Clasificación -->
@@ -235,6 +265,7 @@
                                     <th>Posición</th>
                                     <th>Equipo</th>
                                     <th>Logo</th>
+                                    <th>Comparar Equipo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -242,10 +273,15 @@
                                 {% for team in new_classif %}
                                 {% if team.conference == "West" %}
                                 {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr>
+                                <tr class="team-row">
                                     <td>{{ counter[0] }}</td>
                                     <td>{{ team.name }}</td>
                                     <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                    <td>
+                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                            <i class="far fa-square"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -279,7 +315,7 @@
         });
     });
 
-
+    
     // Cuando se elige un tipo de comparación, se actualiza el dropdown
     document.addEventListener('DOMContentLoaded', function () {
         const dropdownMenu = document.getElementById('comparisonTypeDropdown');
@@ -291,6 +327,7 @@
             });
         });
     });
+
 
     // Cuando se elige una temporada, se actualiza el dropdown y las tablas
     document.addEventListener('DOMContentLoaded', function () {
@@ -308,6 +345,7 @@
             });
         });
     });
+
 
     // Actualiza las tablas de clasificación al cambiar la temporada del dropdown
     function fetchClassifications(season) {
@@ -331,6 +369,7 @@
             .catch(error => console.error('Error:', error));
     }
 
+
     //Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
     function updateTable(tableId, classifData, conference) {
         const tableBody = document.querySelector(`#${tableId} tbody`);
@@ -339,15 +378,21 @@
         classifData.forEach((team, index) => {
             // Usamos index + 1 para comenzar la numeración desde 1 en lugar de 0
             const position = index + 1;
-            const row = `<tr>
+            const row = `<tr class="team-row">
                             <td>${position}</td>
                             <td>${team.name}</td>
                             <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            <td>
+                            <button class="btn" onclick="toggleTeamVisibility('${team.name}', this)">
+                                <i class="far fa-square"></i>
+                            </button>
+                            </td>
                         </tr>`;
             tableBody.innerHTML += row; // Agrega la fila a la tabla
         });
     }
 
+    
     //Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
     //Especial para tablas de conferencia
     function updateTableConference(tableId, classifData, conference) {
@@ -359,15 +404,59 @@
             if (conference === `${team.conference}`) {
                 // Usamos index + 1 para comenzar la numeración desde 1 en lugar de 0
                 contador++; 
-                const row = `<tr>
-                            <td>${contador}</td>
-                            <td>${team.name}</td>
-                            <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                        </tr>`;
+                const row = `<tr class="team-row">
+                                <td>${contador}</td>
+                                <td>${team.name}</td>
+                                <td><img src="${team.logo}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('${team.name}', this)">
+                                    <i class="far fa-square"></i>
+                                </button>
+                                </td>
+                            </tr>`;
                 tableBody.innerHTML += row; // Agrega la fila a la tabla
             }
         });
     }
+
+    function toggleTeamVisibility(teamName, button) {
+    var isChecked = button.querySelector('i').classList.contains('fa-check-square');
+    // Toggle icon
+    if (isChecked) {
+        button.querySelector('i').classList.remove('fa-check-square');
+        button.querySelector('i').classList.add('fa-square');
+        resetView(); // Restablecer la visualización de todas las filas
+    } else {
+        button.querySelector('i').classList.remove('fa-square');
+        button.querySelector('i').classList.add('fa-check-square');
+        // Filtrar filas
+        var tables = document.querySelectorAll('.table');
+        tables.forEach(table => {
+            var rows = table.querySelectorAll('.team-row');
+            rows.forEach(row => {
+                var currentTeam = row.cells[1].textContent;
+                var rowButton = row.querySelector('button i');
+                if (currentTeam !== teamName) {
+                    row.style.visibility = 'hidden'; // Ocultar las filas que no coinciden
+                } else {
+                    row.style.visibility = 'visible'; // Mostrar la fila que coincide
+                    rowButton.classList.remove('fa-square');
+                    rowButton.classList.add('fa-check-square');
+                }
+            });
+        });
+    }
+}
+
+function resetView() {
+    var rows = document.querySelectorAll('.team-row');
+    rows.forEach(row => {
+        row.style.visibility = 'visible'; // Restablecer la visualización de todas las filas
+        var rowButton = row.querySelector('button i');
+        rowButton.classList.remove('fa-check-square');
+        rowButton.classList.add('fa-square'); // Desmarcar todos los botones
+    });
+}
 
 </script>
 

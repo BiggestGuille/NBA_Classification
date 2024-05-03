@@ -37,7 +37,12 @@ def classifications():
 def explanation():
     if not database_initialized:
         return redirect(url_for('home'))
-    return render_template('explanation.html')
+    teams_sql = database.get_teams()
+    teams = [
+        {'name': team[0], 'id': team[1], 'conference': team[2], 'division': team[3], 'logo': team[4]}
+        for team in teams_sql
+    ]
+    return render_template('explanation.html', teams = teams)
 
 # Manejador de error para el error 404 (Página no encontrada)
 @app.errorhandler(404)

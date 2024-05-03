@@ -25,11 +25,202 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="content">
-        <h1>Miau</h1>
-        <p>Lo sentimos, la página que buscas no existe.</p>
-        <a href="/" class="btn btn-dark">Volver a Inicio</a>
-    </div>
+<header class="bg-dark text-white text-center p-3">
+    <h1 data-aos="zoom-in">Explorando la Clasificación en la NBA: ¿Es justa? &#9878;</h1>
+    <h3 data-aos="zoom-in">Resumen del Objetivo del Proyecto</h3>
+</header>
+
+<div class="container my-5">
+
+    <section style="text-align: justify;" id="games" class="mt-4" data-aos="fade-up">
+        <h2>Cómo funciona la clasificación de la NBA &#127936;</h2>
+        <p>La NBA se compone <strong>30 franquicias</strong> que luchan por el campeonato cada año.
+            El campeonato se divide en <strong>temporada regular</strong>, compuesta por 82 partidos por equipo, y <strong>play-offs</strong>, que son una fase eliminatoria final
+            para determinar el campeón de la NBA. Para clasificarse a los play-offs se tiene en cuenta la <strong>proporción de victorias</strong> de un equipo.
+            
+        </p>
+        <p>
+            Sin embargo, debido a las grandes distancias, las franquicias se dividen en <strong>6 divisiones</strong> de 5 equipos cada una, contenidas en <strong>2 conferencias</strong> de 15 equipos cada una.
+            Esto ocasiona que la estructura de partidos tenga varias <strong>limitaciones</strong>, pues la <strong>distribución</strong> de estos encuentros no es <strong>uniforme</strong> entre todas las franquicias. 
+            Existe una mayor proporción de partidos entre franquicias de la misma división, seguido de partidos entre franquicias de la misma conferencia, y finalmente, partidos entre franquicias de conferencias diferentes.
+        </p>
+
+        <p>
+            Esta distribución desigual genera el problema más importante al que nos queremos enfrentar: La <strong>distorsión de la verdadera capacidad competitiva de las franquicias</strong> en la NBA.
+            Por ejemplo, una franquicia puede obtener <strong>dos victorias contra el líder</strong> de la otra conferencia, pero dicho líder puede obtener 
+            <strong>cuatro victorias contra el peor equipo de liga</strong>, porque casualmente esté en su misma conferencia.
+            En este contexto, ¿qué victorias son más valiosas? ¿Cómo se puede medir la verdadera capacidad de un equipo?
+        </p>
+
+        <div class="container">
+            <!-- Primera fila para una conferencia -->
+            <div class="row">
+                <!-- Tabla para la primera división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Atlántico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Atlantic" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Tabla para la segunda división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Central</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Central" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Tabla para la tercera división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Sureste</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Southeast" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Segunda fila para la otra conferencia -->
+            <div class="row">
+                <!-- Repetir las tablas para las divisiones de la otra conferencia con otros equipos -->
+                <!-- Tabla para la primera división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Noroeste</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Northwest" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Tabla para la segunda división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Pacífico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Pacific" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Tabla para la tercera división -->
+                <div class="col-md-4">
+                    <table class="table" data-aos="flip-down" data-aos-delay="100">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="2">División Suroeste</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in teams %}
+                            {% if team.division == "Southwest" %}
+                            <tr>
+                                <td> {{ team.name }} <img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section style="text-align: justify;" id="perron-frobenius" class="mt-4" data-aos="fade-right" data-aos-delay="100">
+        <h2>Teorema de Perron-Frobenius en la NBA &#128218;</h2>
+        <p>La <strong>solución</strong> a nuestro problema está en el Teorema de Perron-Frobenius. Gracias a este teorema, 
+            se puede obtener una clasificación en la que se tiene en cuenta <strong>la calidad de cada victoria individual</strong>, en lugar de basarse exclusivamente en el porcentaje de victorias.
+            De este modo, una <strong>victoria</strong> de un equipo <strong>contra</strong> el contendiente <strong>más fuerte</strong> podría valorarse <strong>más</strong>
+             que <strong>múltiples victorias</strong> de otro equipo <strong>contra</strong> los contendientes <strong>más débiles</strong>. 
+        </p>
+    </section>
+
+    <section style="text-align: justify;" id="simple-example" class="mt-4" data-aos="fade-left" data-aos-delay="100">
+        <h2>¿Cómo es posible aplicar el Teorema a la NBA? &#128173;</h2>
+        <p>Perron-Frobenius asegura la <strong>existencia y unicidad</strong> de un autovector cuyas componentes indicarán la <strong>importancia</strong> de cada elemento en el sistema, siempre y cuando 
+            la matriz correspondiente a dicho autovector sea <strong>no negativa e irreducible</strong>. Entonces, si se construye una <strong>matriz</strong> que indica las <strong>victorias</strong> 
+            que obtiene cada <strong>pareja de equipos</strong>, los requisitos se cumplirán al existir una <strong>cadena de victorias</strong> de manera casi asegurada entre todos los equipos de la NBA, 
+            obteniendo un <strong>vector</strong> cuyas componentes indican la <strong>importancia</strong> relativa de cada <strong>franquicia</strong> en la <strong>clasificación</strong>.
+        </p>
+    </section>
+
+    <section style="text-align: justify;" id="advantages" class="mt-4" data-aos="fade-right" data-aos-delay="100">
+        <h2>Ventajas del Nuevo Método de Clasificación &#11088;</h2>
+        <p>
+            Este nuevo método de clasificación tiene varias <strong>ventajas</strong> respecto al método tradicional basado en el porcentaje de victorias:
+            <ul>
+                <li>En primer lugar, la <strong>distribución desigual</strong> de los partidos <strong>deja de ser un problema</strong>, pues se valora por 
+                    separado la <strong>calidad de cada victoria individual</strong>.</li>
+                <li>En segundo lugar, esta perspectiva introduce consideraciones tales como la <strong>eliminación de los play-offs</strong>. 
+                    Originalmente instaurados para compensar este tipo de desigualdades, los play-offs no garantizan que un <strong>desempeño sólido</strong> a lo largo de los 82 partidos 
+                    de la <strong>temporada regular</strong> sea adecuadamente <strong>recompensado</strong>, dado que equipos pueden ser eliminados tempranamente debido al formato de eliminación directa.</li>
+                <li>Finalmente, también se podría considerar la posibilidad de <strong>eliminar las conferencias</strong>, pues podría ocurrir que de forma generalizada una conferencia demuestre un rendimiento 
+                    superior en comparación con la otra, de manera que <strong>equipos</strong> significativamente <strong>más competitivos</strong> de la conferencia más fuerte <strong>sean eliminados</strong>
+                     antes de los play-offs, mientras que equipos de <strong>menor rendimiento</strong> de la conferencia menos competitiva <strong>avanzan</strong>.</li>
+              </ul>
+        </p>
+    </section>
+
+    <section style="text-align: justify;" id="more-info" class="mt-4" data-aos="fade-left" data-aos-delay="100">
+        <h4>Más información</h4>
+        <p>Para acceder a la documentación u obtener más detalles sobre los fundamentos teóricos matemáticos que sustentan estos resultados y para explorar el código fuente completo 
+            de esta aplicación web, te invito a visitar el proyecto en el repositorio de GitHub: <a href="https://github.com/BiggestGuille/NBA_Classification" class="text-decoration-none text-primary fw-bold">NBA_Classification</a>.</p>
+    </section>
 </div>
+
+<footer class="bg-dark text-white text-center p-3 mt-4">
+    <p>Guillermo Granda Santi © 2024</p>
+</footer>
 {% endblock %}

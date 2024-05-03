@@ -60,7 +60,7 @@ def check_quality_percentage(season: int):
 
 
 # Función para CALCULAR la clasificación normal de la temporada dados los partidos de la misma
-# Devuelve un diccionario con el Id del equipo y el porcentaje de victorias
+# Devuelve un diccionario con el Id del equipo y el número de victorias
 def calculate_normal_classification(season: int):
     with get_database_connection() as db:
         cursor = db.cursor()
@@ -107,7 +107,6 @@ def create_normal_classification_table(normal_classification, season):
         db.commit()
         print(f"La tabla  ha sido creada con éxito.")
 
-        # Introducir los datos
         # Insertar o actualizar los datos en la tabla
         for team_id, percentage in normal_classification.items():
             # Sentencia SQL para insertar cada fila
@@ -153,7 +152,6 @@ def create_new_classification_table(new_classification, season):
         db.commit()
         print(f"La tabla  ha sido creada con éxito.")
 
-        # Introducir los datos
         # Insertar o actualizar los datos en la tabla
         for team_id, quality_percentage in new_classification.items():
             # Sentencia SQL para insertar cada fila
@@ -186,7 +184,7 @@ def get_teams():
     with get_database_connection() as db:
         cursor = db.cursor()
         query = """
-        SELECT "Team Name", Id FROM nba_teams
+        SELECT "Team Name", Id, Conference, Division, Logo FROM nba_teams
         """
         cursor.execute(query)
         teams = cursor.fetchall()

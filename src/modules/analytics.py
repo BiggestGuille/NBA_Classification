@@ -36,12 +36,9 @@ def get_analytics(season: int):
     norm_classif_tie_breaker = check_draws(norm_classif_sorted, season)
     norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
 
-    norm_classif_json = [
-        {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
-        for team in norm_classif_sorted
-    ]
 
-    # Se recogen las clasificaciones nuevas de la temporada (según método estudiado)
+
+    # Se recogen las clasificaciones nuevas de la temporada (según el método estudiado)
 
     # Si la tabla de clasificaciones nuevas no existe en esa temporada, se calcula y se crea
     if database.verify_table("nba_new_classification") == False or not database.check_season_data("nba_new_classification", season):
@@ -55,7 +52,13 @@ def get_analytics(season: int):
     # Se obtiene la clasificación nueva de la temporada para su posterior utilización
     data_new_classification = database.get_new_classification(season)
     data_new_classification = [list(tupla) for tupla in data_new_classification]
-    # new_classif_sorted = sorted(data_new_classification, key=lambda x: x[1], reverse=True)
+
+    # Se devuelven las clasificaciones en formato JSON
+    norm_classif_json = [
+        {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
+        for team in norm_classif_sorted
+    ]
+
     new_classif_json = [
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in data_new_classification
@@ -73,6 +76,7 @@ def get_analytics(season: int):
     """
 
     """
+    Comparando clasificaciones
     with open('classifications.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Team Name', 'Percentage'])  # Encabezados del CSV
