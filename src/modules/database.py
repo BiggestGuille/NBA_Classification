@@ -29,7 +29,7 @@ def verify_table(table_name):
         cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';")
         if cursor.fetchone():
             # La tabla existe
-            print(f"La tabla '{table_name}' ya existe.")
+            #print(f"La tabla '{table_name}' ya existe.")
             return True
         else:
             # La tabla no existe
@@ -39,7 +39,7 @@ def verify_table(table_name):
 def check_season_data(table_name, season):
     with get_database_connection() as db:
         cursor = db.cursor()
-        query = f"SELECT COUNT(*) FROM {table_name} WHERE season = {season}"
+        query = f"SELECT COUNT(*) FROM {table_name} WHERE season = '{season}' OR season = '{season}_normal' OR season = '{season}_new';"
         cursor.execute(query)
         result = cursor.fetchone()
     if result[0] == 0:
@@ -278,7 +278,50 @@ def get_team_whole_conference(team_name, season):
         result = cursor.fetchall()
     return result
 
+# Función para crear la tabla que contendrá todas las clasificaciones de los equipos entre las temporadas 2015-2023
+def create_all_classifications_table():
+    with get_database_connection() as db:
+        # Crear la tabla
+        cursor = db.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS all_classifications (
+            "Key" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "Team Name" INTEGER,
+            season INTEGER NOT NULL,
+            Position INTEGER NOT NULL
+        );
+        ''')
+        db.commit()
+        print(f"La tabla  ha sido creada con éxito.")
 
+#Función para actualizar la tabla de clasificaciones de todos los equipos
+def update_all_classifications(classification, season, type):
+    # La tabla ya existe
+    with get_database_connection() as db:
+        for team in classification:
+            team_name = team['name']
+            season_type = str(season) + "_"+ type
+            position = classification.index(team) + 1
+            cursor = db.cursor()
+            query = "INSERT INTO all_classifications ([Team Name], season, Position) VALUES (?, ?, ?)"
+            data = (team_name, season_type, position)
+            # Ejecutar la consulta
+            cursor.execute(query, data)
+            db.commit()
+            # print(f"La tabla  ha sido actualizada.")
+
+#Función para obtener las clasificaciones de los equipos a lo largo de las temporadas
+def get_all_classifications():
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Team Name", season, Position 
+        FROM all_classifications
+        ORDER BY season
+        """
+        cursor.execute(query)
+        result = cursor.fetchall()
+    return result
 
 
 

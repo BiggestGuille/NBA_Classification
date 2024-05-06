@@ -58,11 +58,19 @@ def get_analytics(season: int):
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in norm_classif_sorted
     ]
-
+    
     new_classif_json = [
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in data_new_classification
     ]
+
+    # Se actualizan las clasificaciones en la tabla de todas las clasificaciones
+    if not database.verify_table("all_classifications"):
+        database.create_all_classifications_table()
+
+    if not database.check_season_data("all_classifications", season):
+        database.update_all_classifications(norm_classif_json, season, "normal")
+        database.update_all_classifications(new_classif_json, season, "new")
 
     return norm_classif_json, new_classif_json
 
@@ -459,8 +467,6 @@ def power_method(matrix, initial_vector, tol=1e-7, max_iterations=1000):
         
     print("No converge.")
     return vector_iter
-
-
 
 
 

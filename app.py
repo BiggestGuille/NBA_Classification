@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, redirect, render_template, request, url_for
+import json
 from src.modules import database
 from src.modules import analytics
 
@@ -22,6 +23,8 @@ def classifications():
     season = request.args.get('season', default=2021, type=int)
     
     norm_classif, new_classif = analytics.get_analytics(season)
+    all_classif = database.get_all_classifications()
+    all_classif_json = [{'name': row[0], 'season': row[1], 'position': row[2]} for row in all_classif]
 
     # Verifica si se encontraron las clasificaciones
     if norm_classif is None or new_classif is None:
@@ -31,7 +34,7 @@ def classifications():
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'norm_classif': norm_classif, 'new_classif': new_classif})
     
-    return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif)
+    return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif, all_classif=all_classif_json)
 
 @app.route('/explanation')
 def explanation():

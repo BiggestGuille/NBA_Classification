@@ -296,16 +296,173 @@
             </div>
         </div>
 
+</div>
+
+<div class="container mt-5">
+    <h4 class="mb-3" data-aos="zoom-in">Comparativa de las Posiciones de los Equipos a lo largo de las Temporadas</h4>
+
+    <div class="dropdown mb-3">
+        <button class="btn btn-dark dropdown-toggle" type="button" id="teamDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Seleccionar Equipo
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="teamDropdown">
+            {% for team in new_classif %}
+            <li><a class="dropdown-item team-choice" href="#" data-value="{{ team.name }}">{{ team.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="normalChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="newChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
     <div>
         <a href="/" class="btn btn-light btn-custom" style="margin-top: 40px;" data-aos="fade-up">Volver</a>
         <a href="explanation" class="btn btn-dark btn-custom" style="margin-top: 40px;" data-aos="fade-up">Ver Explicación</a>
     </div>
     <div style="height: 100px;"></div>
-
-
 </div>
 
+
 <script>
+
+     // Cuando se elige un equipo para ver sus gráficos, se actualiza el dropdown y se dibujan los gráficos
+    document.addEventListener('DOMContentLoaded', () => {
+        const teamChoices = document.querySelectorAll('.team-choice');
+        teamChoices.forEach(choice => {
+            choice.addEventListener('click', event => {
+                event.preventDefault();
+                const selectedTeam = choice.getAttribute('data-value');
+                document.getElementById('teamDropdown').textContent = selectedTeam;
+                drawCharts(selectedTeam);
+            });
+        });
+    });
+
+    // Datos de clasificación pasados al contexto
+    const all_classif = {{ all_classif | tojson }};
+    let normalChart = null;
+    let newChart = null;
+
+    function drawCharts(selectedTeam) {
+        // Filtra las posiciones del equipo seleccionado
+        const normalPositions = all_classif
+            .filter(item => item.name === selectedTeam && item.season.includes("normal"))
+            .map(item => ({ season: item.season.split('_')[0], position: item.position }));
+
+        const newPositions = all_classif
+            .filter(item => item.name === selectedTeam && item.season.includes("new"))
+            .map(item => ({ season: item.season.split('_')[0], position: item.position }));
+
+        // Destruye los gráficos si ya existen
+        if (normalChart !== null) {
+            normalChart.destroy();
+        }
+        if (newChart !== null) {
+            newChart.destroy();
+        }
+
+        // Dibuja los gráficos
+        normalChart = drawChart('normalChart', normalPositions, 'Clasificación Normal');
+        newChart = drawChart('newChart', newPositions, 'Clasificación Nueva');
+    }
+
+    function drawChart(chartId, positions, title) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    // Calcular la Media de las Posiciones
+    // Reduce recorre cada elemento y realiza una operación en cada uno de ellos reduciendo el array a un único valor.
+    const average = positions.reduce((acc, pos) => acc + pos.position, 0) / positions.length;
+
+    //Opciones de gráfico
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: positions.map(pos => pos.season),
+            datasets: [{
+                label: title,
+                data: positions.map(pos => pos.position),
+                borderColor: 'rgba(230, 126, 34, 0.5)',
+                backgroundColor: 'rgba(230, 126, 34, 0.5)',
+                fill: true,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                borderWidth: 2,
+                lineTension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    reverse: true,
+                    min: 1,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + 'º'; // Agregar "º" al valor del eje y
+                        },
+                        font: {
+                            size: 15, // Tamaño de la fuente de la leyenda
+                            weight: 'bold', // Grosor de la fuente (normal, bold)
+                        },
+                        stepSize: 5,
+                        precision: 0
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 15, // Tamaño de la fuente de la leyenda
+                            weight: 'bold', // Grosor de la fuente (normal, bold)
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: title,
+                    font: {
+                        size: 20
+                    }
+                },
+                legend: {
+                    display: false,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Crear el texto con la media debajo del gráfico
+    const parentElement = ctx.canvas.parentElement;
+
+    // Eliminar cualquier texto de media existente
+    const previousMediaText = parentElement.querySelector('.media-text');
+    if (previousMediaText) {
+        parentElement.removeChild(previousMediaText);
+    }
+
+    // Añadir el nuevo texto de media
+    const mediaText = document.createElement('p');
+    mediaText.textContent = `Media: ${average.toFixed(0)}`;
+    // Clase para identificarlo
+    mediaText.className = 'media-text'; 
+    mediaText.style.fontSize = '20px';
+    mediaText.style.textAlign = 'center';
+    mediaText.style.fontFamily = 'Arial, sans-serif';
+    mediaText.style.marginTop = '20px';
+    mediaText.style.fontWeight = 'bold';
+
+    parentElement.appendChild(mediaText);
+
+    return chart;
+}
 
     // Cambia la vista de tarjetas según el dropdown de comparaciones
     document.addEventListener('DOMContentLoaded', () => {
@@ -325,7 +482,7 @@
         });
     });
 
-    
+
     // Cuando se elige un tipo de comparación, se actualiza el dropdown
     document.addEventListener('DOMContentLoaded', function () {
         const dropdownMenu = document.getElementById('comparisonTypeDropdown');
