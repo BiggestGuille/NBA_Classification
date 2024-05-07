@@ -1,13 +1,14 @@
 from . import database
 import numpy as np
 import matplotlib.pyplot as plt
-import random
-import csv
+from . import data_importer
+# import random
+# import csv
 
-# Función que calcula u obtiene las clasificaciones tanto normales como nuevas de una temporada dada y hace todas las operaciones necesarias para ello
+# Función que calcula las clasificaciones normales y nuevas de una temporada dada
 def get_analytics(season: int):
 
-    # Se recogen las clasificaciones normales de la temporada
+    # En primer lugar, se recogen o calculan las clasificaciones normales de la temporada
 
     # Si la tabla de clasificaciones normal no existe en esa temporada, se calcula y se crea
     if not database.verify_table("nba_normal_classification") or not database.check_season_data("nba_normal_classification", season):
@@ -19,20 +20,19 @@ def get_analytics(season: int):
         # Se crea la tabla de clasificación normal
         database.create_normal_classification_table(victory_percentage_by_id, season)
 
-    # Se obtiene la clasificación normal de la temporada para su posterior utilización
+    # Se obtiene la clasificación normal de la temporada
     data_normal_classification = database.get_normal_classification(season)
-    # Añadimos columna desempate
+    # Añadimos columna para desempate
     tie_breaker = 0
-    # Añadir el valor a cada tupla usando una comprensión de listas
     norm_classif_modified = [row + (tie_breaker,) for row in data_normal_classification]
     norm_classif_modified = sorted(norm_classif_modified, key=lambda x: x[1], reverse=True)
     # Pasamos a lista de listas para que no sea inmutable
     norm_classif_list = [list(tupla) for tupla in norm_classif_modified]
-    # Si hay empates, necesitamos especificar la clasificación de desempate
+    # Se realiza el desempate
     norm_classif_tie_breaker = check_draws(norm_classif_list, season)
-    # Se vuelve a ordenar la clasificación con los desempates
+    # Se vuelve a ordenar la clasificación con los desempates según la columna nuevamente añadida
     norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
-    #Por si hay triple empate, se vuelve a desempatar y ordenar
+    # Se vuelve a desempatar y ordenar por si hay triple empate.
     norm_classif_tie_breaker = check_draws(norm_classif_sorted, season)
     norm_classif_sorted = sorted(norm_classif_tie_breaker, key=lambda x: (x[1], x[4]), reverse=True)
 
@@ -49,11 +49,11 @@ def get_analytics(season: int):
         # Se crea la tabla de clasificación nueva
         database.create_new_classification_table(new_classification, season)
 
-    # Se obtiene la clasificación nueva de la temporada para su posterior utilización
+    # Se obtiene la clasificación nueva de la temporada
     data_new_classification = database.get_new_classification(season)
     data_new_classification = [list(tupla) for tupla in data_new_classification]
 
-    # Se devuelven las clasificaciones en formato JSON
+    # Se convierten las clasificaciones a formato JSON para su tratamiento en el frontend
     norm_classif_json = [
         {'name': team[0], 'percentage': team[1], 'conference': team[2], 'logo': team[3]}
         for team in norm_classif_sorted
@@ -73,25 +73,6 @@ def get_analytics(season: int):
         database.update_all_classifications(new_classif_json, season, "new")
 
     return norm_classif_json, new_classif_json
-
-    """
-    # Comprobar que el Quality Percentage es correcto (debe ser 1 con algún decimal de precisión)
-    print(database.check_quality_percentage(season))
-
-    # Primera prueba de que, en efecto, la clasificación cambia
-    print(norm_classif_sorted)
-    print(new_classif_sorted)
-    """
-
-    """
-    Comparando clasificaciones
-    with open('classifications.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['Team Name', 'Percentage'])  # Encabezados del CSV
-        writer.writerows(norm_classif_sorted)
-        writer.writerow([])  # Añade una línea vacía entre los dos conjuntos de datos
-        writer.writerows(new_classif_sorted)
-    """
     
 # Función que calcula los desempates en caso de empate en la clasificación
 def check_draws(classification, season):
@@ -109,7 +90,7 @@ def check_draws(classification, season):
             team4 = None
 
             # Caso empate cuádruple
-            #Sólo se da una vez en 10 años en una misma conferencia. Se hará manualmente.
+            # Sólo se da una vez en 10 años en una misma conferencia. Se hará manualmente.
             if i < len(classification) - 3 and classification[i][1] == classification[i + 1][1] == classification[i + 2][1] == classification[i + 3][1]:
                 team3 = classification[i + 2][0]
                 team4 = classification[i + 3][0]
@@ -120,7 +101,7 @@ def check_draws(classification, season):
                     classification[i+1][4] = 0
                     continue
 
-            # Caso empate cuiádruple en el que sólo 3 equipos son de la misma conferencia. Se hará manualmente para la única temporada en que ocurre, 2023 pues no es prioridad.
+            # Caso empate cuiádruple en el que sólo 3 equipos son de la misma conferencia. Se hará manualmente para la única temporada en que ocurre, pues no es prioridad.
             if i < len(classification) - 3 and classification[i][1] == classification[i + 1][1] == classification[i + 2][1] == classification[i + 3][1]:
                 team3 = classification[i + 2][0]
                 team4 = classification[i + 3][0]
@@ -193,12 +174,13 @@ def check_draws(classification, season):
                             team2 = classification[i + 2][0]
                         elif victories_team3/total_matches_team3 > victories_team1/total_matches_team1 and victories_team3/total_matches_team3 > victories_team2/total_matches_team2:
                             classification[i+2][4] = 2
-                        #else:
-                            # Más desempate triple
-                #   else:
+                        # else:
+                            # Más desempate triple es necesario
+                # else:
                     # Empate entre tres equipos de distinta conferencia. No es relevante. 
 
 
+            # Empate entre dos Equipos
 
             # GANARÁ el equipo que tenga más victorias entre ellos
             victories_team1 = victories_matrix[teams_names.index(team1), teams_names.index(team2)]
@@ -339,35 +321,29 @@ def check_draws(classification, season):
                             continue
 
                         else:
+                            # Nunca se llega a la última condición de desempate
                             print("NECESITAS DESEMPATAR MÁS")
 
     return classification
 
-# Función para calcular la clasificación de la temporada según el método estudiado	
+# Función para calcular la nueva clasificación de la temporada según el método estudiado	
 def calculate_new_classification(season: int):
 
-    # Se obtiene la matriz de victorias de cada equipo contra cada equipo
+    # Se obtiene la matriz de victorias entre cada pareja de franquicias
     victories_matrix = get_victories_matrix(season)
     
     # Se comprueba que se cumple el teorema de Perron-Frobenius
-    # de manera que el método de las potencias converge al vector de Perron
+    # y los requisitos para que el método de las potencias converja al vector de Perron
     if verify_perron_frobenius(victories_matrix):
 
         # Aplicamos el método de las potencias para obtener el vector de Perron
-        initial_vector = np.ones(30) # Vector inicial
+
+        # Vector inicial
+        initial_vector = np.ones(30) 
         # Método de las potencias
         perron_vector = power_method(victories_matrix, initial_vector)
         # Redondear el resultado a 5 decimales
         perron_vector = np.round(perron_vector, decimals=5)
-
-        """
-        # Comprobación con un vector aleatorio, debería dar el mismo resultado
-        vector_random = [random.randint(0, 100) for _ in range(30)]
-        perron_vector2 = power_method(matrix_iter, vector_random)
-        perron_vector2 = np.round(perron_vector2, decimals=5)
-        comparacion = perron_vector == perron_vector2
-        print(comparacion)
-        """
 
         # Se enlaza el resultado para obtener el ranking de los equipos
         new_classification = {}
@@ -380,14 +356,16 @@ def calculate_new_classification(season: int):
             # Insertamos el par clave-valor en el diccionario
             new_classification[key] = value
 
+        # Se devuelve la nueva clasificación
         return new_classification
     else:
+        # Indicar error en caso de no cumplir los requisitos del teorema (altamente improbable)
         print("No se cumple el teorema de Perron-Frobenius. No se puede aplicar el método de las potencias.")
         return None
 
-# Consigue la matriz de victorias de cada equipo
+# Consigue la matriz de victorias que indica las victorias de cada par de equipos i - j
 def get_victories_matrix(season: int):
-    # Buscamos construir una matriz de victorias de cada equipo contra cada equipo.
+    # Conseguir las victorias por cada par de equipos
     victories_per_pair = database.get_victories_per_pair(season)
     teams_sql = database.get_teams()
     # Cada elemento de la lista es una tupla, por lo que hay que transformarlo a strings
@@ -395,18 +373,19 @@ def get_victories_matrix(season: int):
     # Creamos una matriz de ceros de 30x30 para almacenar las victorias de cada equipo sobre cada equipo
     victories_matrix = np.zeros((30, 30))
 
-    # Llenamos la matriz con las victorias que hemos obtenido
+    # Conformamos la matriz con las victorias que hemos obtenido
     for home_team, visitor_team, local_victories, visitor_victories in victories_per_pair:
         i = teams_names.index(home_team)
         j = teams_names.index(visitor_team)
-        # En 2023, hay algún emparejamiento que no se dió en uno de los sentidos
+        # Excepción - Puede existir algún emparejamiento que no se dió en uno de los sentidos
         if local_victories is None or visitor_victories is None:
             victories_matrix[i, j] += 0
             victories_matrix[j, i] += 0
-        # Asegúrate de sumar las victorias del equipo local cuando juega en casa y como visitante
+        #  Sumar las victorias del equipo local cuando juega como local y como visitante
         else:
             victories_matrix[i, j] += local_victories
             victories_matrix[j, i] += visitor_victories
+
     # show_matrix(victories_matrix, teams_names)
     return victories_matrix
 
@@ -428,6 +407,8 @@ def verify_perron_frobenius(matrix):
 
 # Muestra gráficamente la matriz de victorias de cada equipo contra cada equipo
 def show_matrix(matrix, teams):
+    
+    # Gráfico de matriz (heatmap)
     fig, ax = plt.subplots(figsize=(10, 10))
     cax = ax.matshow(matrix, cmap='coolwarm')
 
@@ -442,6 +423,7 @@ def show_matrix(matrix, teams):
     # Añadir barra de colores para indicar la escala
     fig.colorbar(cax)
 
+    # Crear Figura
     plt.show()  
 
 # Ejecuta el método de las potencias para calcular el vector de Perron
@@ -468,8 +450,10 @@ def power_method(matrix, initial_vector, tol=1e-7, max_iterations=1000):
     print("No converge.")
     return vector_iter
 
-
-
+# Inicializa las clasificaciones de todas las temporadas para mostrar los gráficos al inicio del programa
+def initialize_seasons():
+    for season in data_importer.season_list:
+        get_analytics(season)
 
 
 

@@ -2,9 +2,12 @@ import pandas as pd
 import os
 from . import database
 
+# Lista de Temporadas - Variable Global por si se introduce una temporada nueva
+season_list = [2015, 2016, 2017, 2018, 2020, 2021, 2022, 2023]
 
+# Función para crear la tabla de equipos e introducir todos los datos procedentes de la hoja de cálculo
 def teams_table(db, df_teams):
-    # Crear una tabla
+    # Sentencia de creación de tabla
     create_teams_table = '''
     CREATE TABLE IF NOT EXISTS nba_teams (
         id INTEGER PRIMARY KEY,
@@ -20,13 +23,7 @@ def teams_table(db, df_teams):
     # Insertar los datos en la tabla
     df_teams.to_sql('nba_teams', db, if_exists='replace', index=False)
 
-    # Verificar los datos
-    """
-    test_query = "SELECT * FROM nba_teams LIMIT 5;"
-    print(pd.read_sql_query(test_query, db))
-    """
-
-
+# Función para crear la tabla de partidos e introducir todos los datos procedentes de la hoja de cálculo
 def matches_table(db, df_matches):
     create_matches_table = '''
     CREATE TABLE IF NOT EXISTS nba_matches (
@@ -50,39 +47,48 @@ def matches_table(db, df_matches):
 
     df_matches.to_sql('nba_matches', db, if_exists='replace', index=False)
 
-    # Verificar los datos
-    """
-    test_query1 = f"SELECT * FROM nba_matches WHERE season = 2015 LIMIT 5;"
-    print(pd.read_sql_query(test_query1, db))
-    """
-
-
+"""
+Función para asegurar que los datos principales sobre partidos y equipos, 
+procedentes de la hoja de cálculo, se importan al inicio de la aplicación.
+"""
 def import_excel_to_database():
-    # Ruta al archivo Excel
-    excel_file = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'nba_games.xlsx')
-    # Lee el archivo Excel
-    df_teams = pd.read_excel(excel_file, sheet_name='Teams')
+    try:
+        # Ruta al archivo Excel
+        excel_file = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'nba_games.xlsx')
+        # Lee el archivo Excel
+        df_teams = pd.read_excel(excel_file, sheet_name='Teams')
+    except FileNotFoundError:
+        print(f"Archivo Excel no encontrado: {excel_file}")
+        return
+    except ValueError as e:
+        print(f"Error al leer la hoja 'Teams' del archivo Excel: {e}")
+        return
+    
+    try:
+        # Conexión a la base de datos SQLite
+        with database.get_database_connection() as db:
+            # Crear la tabla de equipos
+            teams_table(db, df_teams)
 
-    # Creación de la base de datos SQLite
-    with database.get_database_connection() as db:
+            # Inicialización del DataFrame vacío
+            df_matches_all_seasons = pd.DataFrame()
 
-        # Crear la tabla de equipos
-        teams_table(db, df_teams)
+            # Unir los partidos de todas las temporadas en un único DataFrame
+            for season in season_list:
+                try:
+                    # Leer Excel y concatenar al DataFrame
+                    df_matches = pd.read_excel(excel_file, sheet_name=str(season))
+                    df_matches_all_seasons = pd.concat([df_matches_all_seasons, df_matches], ignore_index=True)
+                except ValueError as e:
+                    print(f"Error al leer la hoja '{season}' del archivo Excel: {e}")
+                    return
 
-        # Inicialización del DataFrame vacío
-        df_matches_all_seasons = pd.DataFrame()
-        # Lista de temporadas
-        season_list = [2015, 2016, 2017, 2018, 2020, 2021, 2022, 2023]
+            # Crear la tabla de partidos
+            matches_table(db, df_matches_all_seasons)
 
-        for season in season_list:
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        return
 
-            # Leer partidos por temporada
-            df_matches = pd.read_excel(excel_file, sheet_name = str(season))
-            # Concatenar los datos de esta temporada al DataFrame general
-            df_matches_all_seasons = pd.concat([df_matches_all_seasons, df_matches], ignore_index=True)
-
-        # Crear la tabla de partidos
-        matches_table(db, df_matches_all_seasons)
-
-        # Mensaje de éxito
-        print("Datos importados correctamente")
+    # Mensaje de éxito
+    print("Datos importados correctamente")
