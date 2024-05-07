@@ -6,34 +6,40 @@
     <style>
         /* Estilos personalizados */
         body {
+            /* Fondo de la página */
             background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
-            background-size: cover; /* Fondo por toda la página */
+            background-size: cover; 
         }
         .container {
-            padding-top: 10vh; /* Ajusta el padding superior para centrar el contenido verticalmente */
+            padding-top: 10vh;
         }
         .btn-custom {
-            margin: 10px; /* Espacio entre los botones */
+            margin: 10px;
         }
         .imagen-centrada {
+            /* Imagen central */
             display: block;
             margin-left: auto;
             margin-right: auto;
-            margin-bottom: 20px; /* JMargen para los botones */
-            width: 38%; /* Tamaño imagen */
+            margin-bottom: 20px;
+            width: 38%;
         }
     </style>
 {% endblock %}
 
 {% block content %}
     <div class="container text-center">
+
         <h1 data-aos="fade-up">Clasificaciones de la NBA</h1>
         <p class="lead" data-aos="fade-up">¿Son realmente justas?</p>
         <img src="../static/images/basket_index.webp" class="imagen-centrada img-fluid" alt="Imagen descriptiva">
+
+        <!-- Botones de navegación -->
         <div>
             <a href="explanation" class="btn btn-light btn-custom" data-aos="fade-up">Explicación del problema</a>
             <a href="classifications" class="btn btn-dark btn-custom" data-aos="fade-up">Comparación de Clasificaciones</a>
         </div>
         <div style="height: 100px;"></div>
+        
     </div>
 {% endblock %}

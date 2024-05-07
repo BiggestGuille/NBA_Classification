@@ -6,18 +6,17 @@
 
 <style>
     body {
+        /* Fondo de la página */
         background: url('../static/images/background_plain.webp') no-repeat center center fixed;
         background-size: cover;
-        /* Fondo por toda la página */
     }
-
     .container {
         text-align: center;
     }
-
     .btn {
     margin-bottom: 10;
     }
+    /* Spinner de cargado oculto al inicio */
     #loadingIndicator {
             visibility: hidden;
     }
@@ -29,7 +28,7 @@
 
 <div class="container mt-5">
     <h1 class="mb-4" data-aos="zoom-in">Comparación de Clasificaciones</h1>
-    <h4 class="mb-3" data-aos="zoom-in">Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias</h2>
+    <h3 class="mb-3" data-aos="zoom-in">Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias</h3>
 
         <div class="row mb-3">
             <div class="col-md-6">
@@ -107,7 +106,7 @@
                         <strong>Clasificación Nueva</strong>
                     </div>
                     <div class="card-body">
-                        <!-- Contenido para vista "Total" - Nueva Clasificación -->
+                        <!-- Contenido para vista "Total" - Clasificación Nueva -->
                         <table class="table" id="new_classif_table" data-aos="flip-right">
                             <thead>
                                 <tr>
@@ -186,7 +185,7 @@
                         <strong>Clasificación Nueva - Conferencia Este</strong>
                     </div>
                     <div class="card-body">
-                        <!-- Contenido para Conferencia Este - Nueva Clasificación -->
+                        <!-- Contenido para Conferencia Este - Clasificación Nueva -->
                         <table class="table" id="new_classif_east">
                             <thead>
                                 <tr>
@@ -265,7 +264,7 @@
                         <strong>Clasificación Nueva - Conferencia Oeste</strong>
                     </div>
                     <div class="card-body">
-                        <!-- Contenido para Conferencia Oeste - Nueva Clasificación -->
+                        <!-- Contenido para Conferencia Oeste - Clasificación Nueva -->
                         <table class="table" id="new_classif_west">
                             <thead>
                                 <tr>
@@ -301,6 +300,7 @@
 
 </div>
 
+<!--Sección para los Gráficos de Comparación del rendimiento de cada equipo a lo largo de las distintas temporadas según ambas clasificaciones-->
 <div class="container mt-5">
     <h4 class="mb-3" data-aos="zoom-in">Comparativa de las Posiciones de los Equipos a lo largo de las Temporadas</h4>
 
@@ -309,6 +309,7 @@
         <button class="btn btn-dark dropdown-toggle" type="button" id="teamDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Seleccionar Equipo
         </button>
+        <!-- Contenido del Dropdown -->
         <ul class="dropdown-menu" aria-labelledby="teamDropdown">
             {% for team in new_classif %}
             <li><a class="dropdown-item team-choice" href="#" data-value="{{ team.name }}">{{ team.name }}</a></li>
@@ -320,7 +321,7 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
-
+    <!-- Sección para los Charts / Gráficos -->
     <div class="row">
         <div class="col-md-6">
             <canvas id="normalChart"></canvas>
@@ -331,6 +332,7 @@
     </div>
 </div>
 
+<!--Sección para los botones de navegación-->
 <div class="container mt-5">
     <div>
         <a href="/" class="btn btn-light btn-custom" style="margin-top: 40px;" data-aos="fade-up">Volver</a>
@@ -339,10 +341,10 @@
     <div style="height: 100px;"></div>
 </div>
 
+<!--Scripts-->
 <script src="{{ url_for('static', filename='js/classifications.js') }}"></script>
 <script>
-    // Datos de clasificación pasados al contexto y otras variables globales
-    const all_classif = {{ all_classif | tojson }};
+    // Variables globales
     let normalChart = null;
     let newChart = null;
     let isInitialized = false;

@@ -18,6 +18,7 @@ def home():
     # Se carga la plantilla inicial
     return render_template('index.html')
 
+
 # Renderiza la plantilla de clasificaciones
 @app.route('/classifications')
 def classifications():
@@ -45,6 +46,7 @@ def classifications():
     # Se renderiza la página de clasificaciones
     return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif, all_classif=all_classif_json)
 
+
 # Calcula todas las temporadas para asegurar la carga correcta de los gráficos de rendimiento entre temporadas
 @app.route('/initialize_seasons', methods=['POST'])
 def initialize_seasons():
@@ -53,6 +55,7 @@ def initialize_seasons():
     all_classif = database.get_all_classifications()
     all_classif_json = [{'name': row[0], 'season': row[1], 'position': row[2]} for row in all_classif]
     return jsonify({'all_classif': all_classif_json})
+
 
 # Renderiza la plantilla de explicación
 @app.route('/explanation')
@@ -69,10 +72,12 @@ def explanation():
     # Se renderiza la página de clasificaciones
     return render_template('explanation.html', teams = teams)
 
+
 # Manejador de errores para las páginas no encontradas (Error 404 Not Found)
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('not_found.html'), 404
+
 
 # Aplicación Principal
 if __name__ == '__main__':
