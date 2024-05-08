@@ -1,4 +1,4 @@
-// Cuando se elige un tipo de comparación, se actualiza el dropdown
+// Cuando se elige un tipo de comparación, se actualiza el desplegable
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownMenu = document.getElementById('comparisonTypeDropdown');
     const seasonChoices = document.querySelectorAll('.comparison-choice');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Cambia la vista de tarjetas según el dropdown de comparaciones
+// Cambia la vista de tarjetas según el desplegable de comparaciones
 document.addEventListener('DOMContentLoaded', () => {
     const comparisonChoices = document.querySelectorAll('.comparison-choice');
     comparisonChoices.forEach(choice => {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Cuando se elige una temporada, se actualiza el dropdown y las tablas
+// Cuando se elige una temporada, se actualiza el desplegable y las tablas
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownMenu = document.getElementById('seasonDropdown');
     const seasonChoices = document.querySelectorAll('.season-choice');
@@ -38,14 +38,14 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             dropdownMenu.textContent = choice.textContent;
             const selectedSeason = choice.getAttribute('data-value');
-            // Función que actualiza las tablas, pasando la temporada seleccionada
+            // Función que realiza la petición AJAX, pasando la temporada seleccionada
             fetchClassifications(selectedSeason);
 
         });
     });
 });
 
-// Actualiza las tablas de clasificación al cambiar la temporada del dropdown
+// Petición AJAX para obtener las clasificaciones de la temporada seleccionada
 function fetchClassifications(season) {
     fetch(`/classifications?season=${season}`, {
         headers: {
@@ -54,11 +54,14 @@ function fetchClassifications(season) {
     })
         .then(response => response.json())
         .then(data => {
-            // Asumiendo que tienes funciones updateTable() para actualizar cada tabla
             console.log(data);
-            updateTable('norm_classif_table', data.norm_classif, "All"); // Actualiza la tabla normal
-            updateTable('new_classif_table', data.new_classif, "All"); // Actualiza la nueva tabla
+            //Funciones que actualizan las tablas con la información obtenida de la temporada seleccionada
 
+            // Caso vista total
+            updateTable('norm_classif_table', data.norm_classif, "All"); 
+            updateTable('new_classif_table', data.new_classif, "All"); 
+
+            // Caso vista por conferencia
             updateTableConference('norm_classif_east', data.norm_classif, "East"); // Actualiza la tabla normal de la conferencia este
             updateTableConference('new_classif_east', data.new_classif, "East"); // Actualiza la tabla nueva de la conferencia este
             updateTableConference('norm_classif_west', data.norm_classif, "West"); // Actualiza la tabla normal de la conferencia oeste
@@ -68,7 +71,9 @@ function fetchClassifications(season) {
 }
 
 
-//Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
+// Función para actualizar las tablas.
+// Borra la tabla y vuelve a actualizarla, pues al no refrescarse la página, el bucle de Jinja2 no se vuelve a ejecutar.
+// Caso vista total
 function updateTable(tableId, classifData, conference) {
     const tableBody = document.querySelector(`#${tableId} tbody`);
     tableBody.innerHTML = ''; // Limpia la tabla actual
@@ -86,13 +91,15 @@ function updateTable(tableId, classifData, conference) {
                         </button>
                         </td>
                     </tr>`;
-        tableBody.innerHTML += row; // Agrega la fila a la tabla
+        // Agrega la fila a la tabla
+        tableBody.innerHTML += row; 
     });
 }
 
 
-//Borra la tabla y vuelve a actualizarla equipo a equipo ya que no se refresca la página y el bucle for no puede volver a ejecutarse
-//Especial para tablas de conferencia
+// Función para actualizar las tablas.
+// Borra la tabla y vuelve a actualizarla, pues al no refrescarse la página, el bucle de Jinja2 no se vuelve a ejecutar.
+// Caso vista por conferencia
 function updateTableConference(tableId, classifData, conference) {
     const tableBody = document.querySelector(`#${tableId} tbody`);
     tableBody.innerHTML = ''; // Limpia la tabla actual
@@ -112,14 +119,16 @@ function updateTableConference(tableId, classifData, conference) {
                             </button>
                             </td>
                         </tr>`;
-            tableBody.innerHTML += row; // Agrega la fila a la tabla
+            // Agrega la fila a la tabla
+            tableBody.innerHTML += row; 
         }
     });
 }
 
+// Función para mostrar u ocultar las filas de un equipo
 function toggleTeamVisibility(teamName, button) {
     var isChecked = button.querySelector('i').classList.contains('fa-check-square');
-    // Toggle icon
+    // Marcar o desmarcar la casilla de verificación
     if (isChecked) {
         button.querySelector('i').classList.remove('fa-check-square');
         button.querySelector('i').classList.add('fa-square');
@@ -127,7 +136,7 @@ function toggleTeamVisibility(teamName, button) {
     } else {
         button.querySelector('i').classList.remove('fa-square');
         button.querySelector('i').classList.add('fa-check-square');
-        // Filtrar filas
+        // Filtrar filas que se deben ocultar
         var tables = document.querySelectorAll('.table');
         tables.forEach(table => {
             var rows = table.querySelectorAll('.team-row');
@@ -146,7 +155,20 @@ function toggleTeamVisibility(teamName, button) {
     }
 }
     
-// Cuando se elige un equipo para ver sus gráficos, se actualiza el dropdown y se dibujan los gráficos.
+// Función para restablecer la visualización de todas las filas
+function resetView() {
+    var rows = document.querySelectorAll('.team-row');
+    rows.forEach(row => {
+        // Todo vuelve a ser visible
+        row.style.visibility = 'visible'; 
+        var rowButton = row.querySelector('button i');
+        rowButton.classList.remove('fa-check-square');
+        // Se desmarcan todos los botones
+        rowButton.classList.add('fa-square'); 
+    });
+}
+
+// Cuando se elige un equipo para ver sus gráficos, se actualiza el desplegable y se dibujan los gráficos
 document.addEventListener('DOMContentLoaded', () => {
     const teamChoices = document.querySelectorAll('.team-choice');
     teamChoices.forEach(choice => {
@@ -154,23 +176,16 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             const selectedTeam = choice.getAttribute('data-value');
             document.getElementById('teamDropdown').textContent = selectedTeam;
+            // Función que dibuja los gráficos
             drawCharts(selectedTeam);
         });
     });
 });
 
-function resetView() {
-    var rows = document.querySelectorAll('.team-row');
-    rows.forEach(row => {
-        row.style.visibility = 'visible'; // Restablecer la visualización de todas las filas
-        var rowButton = row.querySelector('button i');
-        rowButton.classList.remove('fa-check-square');
-        rowButton.classList.add('fa-square'); // Desmarcar todos los botones
-    });
-}
 
 function drawCharts(selectedTeam) {
-    // Filtra las posiciones del equipo seleccionado
+
+    // Se filtra la información correspondiente a cada clasificación
     const normalPositions = allClassifications
         .filter(item => item.name === selectedTeam && item.season.includes("normal"))
         .map(item => ({ season: item.season.split('_')[0], position: item.position }));
@@ -190,15 +205,16 @@ function drawCharts(selectedTeam) {
         newChart.destroy();
     }
 
-    // Dibuja los gráficos
-    normalChart = drawChart('normalChart', normalPositions, 'Clasificación Normal');
-    newChart = drawChart('newChart', newPositions, 'Clasificación Nueva');
+    // Función que crea la configuración de los gráficos
+    normalChart = createChart('normalChart', normalPositions, 'Clasificación Normal');
+    newChart = createChart('newChart', newPositions, 'Clasificación Nueva');
 }
 
-function drawChart(chartId, positions, title) {
+// Función que recoge la configuración de los gráficos
+function createChart(chartId, positions, title) {
     const ctx = document.getElementById(chartId).getContext('2d');
     // Calcular la Media de las Posiciones
-    // Reduce recorre cada elemento y realiza una operación en cada uno de ellos reduciendo el array a un único valor.
+    // 'Reduce' recorre cada elemento y realiza una operación en cada uno de ellos reduciendo el array a un único valor.
     const average = positions.reduce((acc, pos) => acc + pos.position, 0) / positions.length;
 
     //Opciones de gráfico
@@ -221,14 +237,16 @@ function drawChart(chartId, positions, title) {
             scales: {
                 y: {
                     reverse: true,
+                    // Como mínimo, el equipo tiene una posición global de 1º y máxima de 30º
                     min: 1,
                     ticks: {
+                        // Agregar "º" al valor del eje y
                         callback: function(value, index, values) {
-                            return value + 'º'; // Agregar "º" al valor del eje y
+                            return value + 'º'; 
                         },
                         font: {
-                            size: 15, // Tamaño de la fuente de la leyenda
-                            weight: 'bold', // Grosor de la fuente (normal, bold)
+                            size: 15, 
+                            weight: 'bold',
                         },
                         stepSize: 5,
                         precision: 0
@@ -237,13 +255,14 @@ function drawChart(chartId, positions, title) {
                 x: {
                     ticks: {
                         font: {
-                            size: 15, // Tamaño de la fuente de la leyenda
-                            weight: 'bold', // Grosor de la fuente (normal, bold)
+                            size: 15,
+                            weight: 'bold',
                         }
                     }
                 }
             },
             plugins: {
+                // Mejora del título
                 title: {
                     display: true,
                     text: title,
@@ -262,7 +281,7 @@ function drawChart(chartId, positions, title) {
     // Crear el texto con la media debajo del gráfico
     const parentElement = ctx.canvas.parentElement;
 
-    // Eliminar cualquier texto de media existente
+    // Eliminar cualquier texto de media existente para evitar repeticiones
     const previousMediaText = parentElement.querySelector('.media-text');
     if (previousMediaText) {
         parentElement.removeChild(previousMediaText);
@@ -284,13 +303,14 @@ function drawChart(chartId, positions, title) {
     return chart;
 }
 
+// Cuando se quiere visualizar un gráfico por primera vez, es imperativo inicializar todas las temporadas antes de hacerlo.
+// Este script muestra un 'spinner' de carga y realiza una petición AJAX para inicializar las temporadas.
 teamDropdown.addEventListener("click", function () {
 
     const loadingIndicator = document.getElementById("loadingIndicator");
     const teamDropdownWrapper = document.getElementById("teamDropdownWrapper");
-    
-    if (!isInitialized) {
 
+    if (!isInitialized) {
         teamDropdownWrapper.style.visibility = "hidden"; // Ocultar el dropdown
         loadingIndicator.style.visibility = "visible"; // Mostrar el spinner
 
@@ -313,7 +333,6 @@ teamDropdown.addEventListener("click", function () {
             teamDropdownWrapper.style.visibility = "visible"; // Mostrar el dropdown
             loadingIndicator.style.visibility = "hidden"; // Ocultar el spinner
             isInitialized = true; // Establecer que ya está inicializado
-
         });
     }
 });
