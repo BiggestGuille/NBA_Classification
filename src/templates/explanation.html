@@ -24,13 +24,11 @@
 </style>
 {% endblock %}
 
-{% block content %}
-
 <!-- Título y descripción de la página -->
-<header class="bg-dark text-white text-center p-3">
-    <h1 data-aos="zoom-in">Explorando la Clasificación en la NBA: ¿Es justa? &#9878;</h1>
-    <h3 data-aos="zoom-in">Resumen del Objetivo del Proyecto</h3>
-</header>
+{% block header %}Explorando la Clasificación en la NBA: ¿Es justa? &#9878;{% endblock %}
+{% block description %}Resumen del Objetivo del Proyecto{% endblock %}
+
+{% block content %}
 
 <!-- Contenido principal -->
 <div class="container my-5">
@@ -231,9 +229,4 @@
 
 </div>
 
-
-<!-- Pie de página -->
-<footer class="bg-dark text-white text-center p-3 mt-4">
-    <p>Guillermo Granda Santi © 2024</p>
-</footer>
 {% endblock %}

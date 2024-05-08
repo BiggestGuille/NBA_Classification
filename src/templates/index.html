@@ -27,17 +27,25 @@
     </style>
 {% endblock %}
 
+<!-- Título y descripción de la página -->
+{% block header %}Clasificaciones de la NBA &#127936;{% endblock %}
+{% block description %}¿Son realmente justas?  &#9878;{% endblock %}
+
 {% block content %}
     <div class="container text-center">
 
-        <h1 data-aos="fade-up">Clasificaciones de la NBA</h1>
-        <p class="lead" data-aos="fade-up">¿Son realmente justas?</p>
-        <img src="../static/images/basket_index.webp" class="imagen-centrada img-fluid" alt="Imagen descriptiva">
+        <!-- Introducción -->
+        <div class="mx-auto" style="max-width: 60%; text-align: center; margin-top: 20px; margin-bottom: 20px;">
+            <h4 data-aos="fade-up">Descubre una nueva perspectiva para la clasificación en la NBA basada en el teorema matemático de Perron-Frobenius</h4>
+        </div>
 
+        <!-- Imagen -->
+        <img src="../static/images/basket_index.webp" class="imagen-centrada img-fluid" alt="Imagen descriptiva" data-aos="zoom-in">  
+        
         <!-- Botones de navegación -->
         <div>
-            <a href="explanation" class="btn btn-light btn-custom" data-aos="fade-up">Explicación del problema</a>
-            <a href="classifications" class="btn btn-dark btn-custom" data-aos="fade-up">Comparación de Clasificaciones</a>
+            <a href="explanation" class="btn btn-light btn-custom" data-aos="fade-right">Explicación del problema</a>
+            <a href="classifications" class="btn btn-dark btn-custom" data-aos="fade-left">Comparación de Clasificaciones</a>
         </div>
         <div style="height: 100px;"></div>
         

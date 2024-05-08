@@ -24,13 +24,18 @@
 </style>
 {% endblock %}
 
+{% block header %}Error 404{% endblock %}
+{% block description %}Página No Encontrada{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="content">
-        <h1>Error 404 - Página No Encontrada</h1>
-        <p>Lo sentimos, la página que buscas no existe.</p>
+        <div style="margin-bottom:35px;">
+            <h5>Lo sentimos, la página que buscas no existe.</h5>
+        </div>
         <!-- Botón de regreso -->
         <a href="/" class="btn btn-dark">Volver a Inicio</a>
     </div>
+    <div style="height: 840px;"></div>
 </div>
 {% endblock %}

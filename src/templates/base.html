@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Clasificaciones de la NBA{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- Estilos -->
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
@@ -13,6 +13,13 @@
     {% block style %}{% endblock %}
 </head>
 <body>
+
+    <!-- Título y descripción de la página -->
+    <header class="bg-dark text-white text-center p-3">
+        <h1 data-aos="zoom-in">{% block header %}{% endblock %}</h1>
+        <h3 data-aos="zoom-in">{% block description %}{% endblock %}</h3>
+    </header>
+
     <!-- Contenido principal -->
     {% block content %}{% endblock %}
 
@@ -23,5 +30,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
     
+    <!-- Pie de página -->
+    <footer class="bg-dark text-white text-center p-3 mt-4">
+        <p>Guillermo Grande Santi © 2024</p>
+    </footer>   
 </body>
 </html>
