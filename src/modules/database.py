@@ -236,16 +236,6 @@ def get_all_classifications():
 
 
 
-# Función para obtener la información de los equipos de la NBA
-def get_teams():
-    with get_database_connection() as db:
-        cursor = db.cursor()
-        query = """
-        SELECT "Team Name", Id, Conference, Division, Logo FROM nba_teams
-        """
-        cursor.execute(query)
-        teams = cursor.fetchall()
-    return teams
 
 # Función para obtener las victorias por cada pareja de equipos
 def get_victories_per_pair(season: int):
@@ -272,6 +262,17 @@ def get_victories_per_pair(season: int):
         cursor.execute(query, (season,))
         results = cursor.fetchall()
     return results
+
+# Función para obtener la información de los equipos de la NBA
+def get_teams():
+    with get_database_connection() as db:
+        cursor = db.cursor()
+        query = """
+        SELECT "Team Name", Id, Conference, Division, Logo FROM nba_teams
+        """
+        cursor.execute(query)
+        teams = cursor.fetchall()
+    return teams
 
 # Función para obtener la división de un equipo
 def get_team_division(team_name):
