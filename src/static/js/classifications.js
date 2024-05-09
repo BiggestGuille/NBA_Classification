@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+
 // Cuando se elige una temporada, se actualiza el desplegable y las tablas
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownMenu = document.getElementById('seasonDropdown');
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Petición AJAX para obtener las clasificaciones de la temporada seleccionada
+// Petición AJAX para obtener las clasificaciones de la temporada seleccionada y actualizar las tablas
 function fetchClassifications(season) {
     fetch(`/classifications?season=${season}`, {
         headers: {
@@ -54,12 +56,13 @@ function fetchClassifications(season) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
+
             //Funciones que actualizan las tablas con la información obtenida de la temporada seleccionada
 
             // Caso vista total
-            updateTable('norm_classif_table', data.norm_classif, "All"); 
-            updateTable('new_classif_table', data.new_classif, "All"); 
+            updateTable('norm_classif_table', data.norm_classif); 
+            updateTable('new_classif_table', data.new_classif); 
 
             // Caso vista por conferencia
             updateTableConference('norm_classif_east', data.norm_classif, "East"); // Actualiza la tabla normal de la conferencia este
@@ -74,7 +77,7 @@ function fetchClassifications(season) {
 // Función para actualizar las tablas.
 // Borra la tabla y vuelve a actualizarla, pues al no refrescarse la página, el bucle de Jinja2 no se vuelve a ejecutar.
 // Caso vista total
-function updateTable(tableId, classifData, conference) {
+function updateTable(tableId, classifData) {
     const tableBody = document.querySelector(`#${tableId} tbody`);
     tableBody.innerHTML = ''; // Limpia la tabla actual
 
@@ -125,10 +128,12 @@ function updateTableConference(tableId, classifData, conference) {
     });
 }
 
+
+
 // Función para mostrar u ocultar las filas de un equipo
 function toggleTeamVisibility(teamName, button) {
     var isChecked = button.querySelector('i').classList.contains('fa-check-square');
-    // Marcar o desmarcar la casilla de verificación
+    // Dependiendo de si se ha marcado o desmarcado la casilla de verificación
     if (isChecked) {
         button.querySelector('i').classList.remove('fa-check-square');
         button.querySelector('i').classList.add('fa-square');
@@ -168,6 +173,42 @@ function resetView() {
     });
 }
 
+
+
+// Cuando se quiere visualizar un gráfico por primera vez, es imperativo inicializar todas las temporadas antes de hacerlo.
+// Este script muestra un 'spinner' de carga y realiza una petición AJAX para inicializar las temporadas.
+teamDropdown.addEventListener("click", function () {
+
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    const teamDropdownWrapper = document.getElementById("teamDropdownWrapper");
+
+    if (!isInitialized) {
+        teamDropdownWrapper.style.visibility = "hidden"; // Ocultar el dropdown
+        loadingIndicator.style.visibility = "visible"; // Mostrar el spinner
+
+        fetch("/initialize_seasons", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            allClassifications = data.all_classif;
+            // console.log(allClassifications);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred while initializing seasons.");
+        })
+        .finally(() => {
+            teamDropdownWrapper.style.visibility = "visible"; // Mostrar el dropdown
+            loadingIndicator.style.visibility = "hidden"; // Ocultar el spinner
+            isInitialized = true; // Establecer que ya está inicializado
+        });
+    }
+});
+
 // Cuando se elige un equipo para ver sus gráficos, se actualiza el desplegable y se dibujan los gráficos
 document.addEventListener('DOMContentLoaded', () => {
     const teamChoices = document.querySelectorAll('.team-choice');
@@ -194,8 +235,8 @@ function drawCharts(selectedTeam) {
         .filter(item => item.name === selectedTeam && item.season.includes("new"))
         .map(item => ({ season: item.season.split('_')[0], position: item.position }));
 
-    console.log(normalPositions);
-    console.log(newPositions);
+    // console.log(normalPositions);
+    // console.log(newPositions);
 
     // Destruye los gráficos si ya existen
     if (normalChart !== null) {
@@ -302,37 +343,3 @@ function createChart(chartId, positions, title) {
 
     return chart;
 }
-
-// Cuando se quiere visualizar un gráfico por primera vez, es imperativo inicializar todas las temporadas antes de hacerlo.
-// Este script muestra un 'spinner' de carga y realiza una petición AJAX para inicializar las temporadas.
-teamDropdown.addEventListener("click", function () {
-
-    const loadingIndicator = document.getElementById("loadingIndicator");
-    const teamDropdownWrapper = document.getElementById("teamDropdownWrapper");
-
-    if (!isInitialized) {
-        teamDropdownWrapper.style.visibility = "hidden"; // Ocultar el dropdown
-        loadingIndicator.style.visibility = "visible"; // Mostrar el spinner
-
-        fetch("/initialize_seasons", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            allClassifications = data.all_classif;
-            console.log(allClassifications);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred while initializing seasons.");
-        })
-        .finally(() => {
-            teamDropdownWrapper.style.visibility = "visible"; // Mostrar el dropdown
-            loadingIndicator.style.visibility = "hidden"; // Ocultar el spinner
-            isInitialized = true; // Establecer que ya está inicializado
-        });
-    }
-});
