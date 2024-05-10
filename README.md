@@ -24,9 +24,12 @@ Clone the repository:
 
 ### Running the application ▶️
 
-If you have Docker installed, you can now run the web application
+If Docker is already installed on your system, you're all set to construct the Docker image and initiate the container for the web application.
 ```bash
-   docker run -p 5000:5000 nba-classif-webapp
+   docker build -t nba-classif-webapp .
+```
+```bash
+docker run -p 5000:5000 nba-classif-webapp
 ```
 The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000) or [http://localhost:5000](http://localhost:5000).
 
