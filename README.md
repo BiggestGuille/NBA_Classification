@@ -16,15 +16,18 @@ This innovative approach not only introduces new insights into team performance 
 
 ### Installation 💻 
 
-Clone the repository:
+You can either download the ZIP of the repository or clone it using the following command:
 ```bash
 git clone https://github.com/BiggestGuille/NBA_Classification.git
+```
+Navigate into the repository directory:
+```bash
 cd NBA_Classification
 ```
 
 ### Running the application ▶️
 
-If Docker is already installed on your system, you're all set to construct the Docker image and initiate the container for the web application.
+If Docker is already installed on your system, you're all set to construct the Docker image and initiate the container for the web application:
 ```bash
 docker build -t nba-classif-webapp .
 ```
