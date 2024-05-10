@@ -23,7 +23,6 @@
     .dropdown-menu {
         max-height: 275px; /* Limitar la altura máxima del dropdown */
         overflow-y: auto; /* Hacerlo desplazable verticalmente */
-        overflow-x: hidden; /* Ocultar desplazamiento horizontal */
     }
 </style>
 
@@ -60,12 +59,12 @@
                 <div class="dropdown">
                     <button class="btn btn-dark dropdown-toggle" type="button" id="comparisonTypeDropdown"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        Por Conferencia
+                        Por Conferencias
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
-                        <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Total</a></li>
+                        <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Global</a></li>
                         <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por
-                                Conferencia</a></li>
+                                Conferencias</a></li>
                     </ul>
                 </div>
             </div>
@@ -75,7 +74,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Clasificación Tradicional</strong>
+                        <strong>Clasificación Tradicional - Global</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para vista "Total" - Clasificación Normal -->
@@ -109,7 +108,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Clasificación Nueva</strong>
+                        <strong>Clasificación Nueva - Global</strong>
                     </div>
                     <div class="card-body">
                         <!-- Contenido para vista "Total" - Clasificación Nueva -->
