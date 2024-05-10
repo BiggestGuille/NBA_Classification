@@ -3,34 +3,35 @@
 {% block title %}Clasificaciones de la NBA{% endblock %}
 
 {% block style %}
-    <style>
-        /* Estilos personalizados */
-        body {
-            /* Fondo de la página */
-            background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
-            background-size: cover; 
-        }
-        .container {
-            padding-top: 10vh;
-        }
-        .btn-custom {
-            margin: 10px;
-        }
-        .imagen-centrada {
-            /* Imagen central */
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 20px;
-            width: 38%;
-        }
-        footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 70px; /* Altura del footer */
-}
-    </style>
+<style>
+    /* Estilos personalizados */
+    body {
+        /* Fondo de la página */
+        background: url('../static/images/background_plain.webp') no-repeat center center fixed; 
+        background-size: cover; 
+    }
+    .container {
+        padding-top: 10vh;
+    }
+    .btn-custom {
+        margin: 10px;
+    }
+    .imagen-centrada {
+        /* Imagen central */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 20px;
+        width: 38%;
+    }
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 70px;
+        width: 100%;
+  }
+</style>
 {% endblock %}
 
 <!-- Título y descripción de la página -->
@@ -53,6 +54,5 @@
             <a href="explanation" class="btn btn-light btn-custom" data-aos="fade-right">Explicación del problema</a>
             <a href="classifications" class="btn btn-dark btn-custom" data-aos="fade-left">Comparación de Clasificaciones</a>
         </div>
-        
-    </div>
+        <div style="height: 100px;"></div>
 {% endblock %}

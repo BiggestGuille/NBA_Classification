@@ -20,6 +20,11 @@
     #loadingIndicator {
             visibility: hidden;
     }
+    .dropdown-menu {
+        max-height: 250px; /* Limitar la altura máxima del dropdown */
+        overflow-y: auto; /* Hacerlo desplazable verticalmente */
+        overflow-x: hidden; /* Ocultar desplazamiento horizontal */
+    }
 </style>
 
 {% endblock %}
