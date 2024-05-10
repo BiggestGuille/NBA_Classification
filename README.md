@@ -17,16 +17,16 @@ This innovative approach not only introduces new insights into team performance 
 ### Installation 💻 
 
 Clone the repository:
-   ```bash
-   git clone https://github.com/BiggestGuille/NBA_Classification.git
-   cd NBA_Classification
-   ```
+```bash
+git clone https://github.com/BiggestGuille/NBA_Classification.git
+cd NBA_Classification
+```
 
 ### Running the application ▶️
 
 If Docker is already installed on your system, you're all set to construct the Docker image and initiate the container for the web application.
 ```bash
-   docker build -t nba-classif-webapp .
+docker build -t nba-classif-webapp .
 ```
 ```bash
 docker run -p 5000:5000 nba-classif-webapp
