@@ -30,7 +30,10 @@ def classifications():
     
     # Se calculan las clasificaciones de dicha temporada
     norm_classif, new_classif = analytics.get_analytics(season)
-    
+    # Se necesitan los equipos ordenados por orden alfabético
+    teams_sorted = sorted(new_classif, key=lambda x: x['name'])
+
+
     # Se recogen las posiciones de los equipos en todas las temporadas
     all_classif = database.get_all_classifications()
     all_classif_json = [{'name': row[0], 'season': row[1], 'position': row[2]} for row in all_classif]
@@ -44,7 +47,7 @@ def classifications():
         return jsonify({'norm_classif': norm_classif, 'new_classif': new_classif})
     
     # Se renderiza la página de clasificaciones
-    return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif, all_classif=all_classif_json)
+    return render_template('classifications.html', norm_classif=norm_classif, new_classif=new_classif, all_classif=all_classif_json, teams_sorted=teams_sorted)
 
 
 # Calcula todas las temporadas para asegurar la carga correcta de los gráficos de rendimiento entre temporadas

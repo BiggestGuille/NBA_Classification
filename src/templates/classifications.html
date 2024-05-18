@@ -28,295 +28,315 @@
 
 {% endblock %}
 
-{% block header %}Comparación de Clasificaciones{% endblock %}
-{% block description %}Elija una temporada y si quiere comparar todos los equipos o dividir por conferencias{% endblock %}
+{% block header %}&#127936; Comparación de Clasificaciones &#127936;{% endblock %}
+{% block description %}{% endblock %}
+
+{% block headerExpansion %}
+
+{% endblock %}
 
 {% block content %}
 
 <div class="container mt-5">
-    
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="dropdown">
-                    <button class="btn btn-dark dropdown-toggle" type="button" id="seasonDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        2021-22
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2015">2015-16</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2016">2016-17</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2017">2017-18</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2018">2018-19</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2020">2020-21</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2021">2021-22</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2022">2022-23</a></li>
-                        <li><a class="dropdown-item season-choice" href="#" data-value="2023">2023-24</a></li>
-                    </ul>
+    <div class="row mb-3">
+        <h3>Elija una temporada y elija si quiere comparar todos los equipos o dividir por conferencias</h3>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-dark dropdown-toggle" type="button" id="seasonDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 16px; padding: 10px 20px;">
+                    2021-22
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="seasonDropdown">
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2015">2015-16</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2016">2016-17</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2017">2017-18</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2018">2018-19</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2020">2020-21</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2021">2021-22</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2022">2022-23</a></li>
+                    <li><a class="dropdown-item season-choice" href="#" data-value="2023">2023-24</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-dark dropdown-toggle" type="button" id="comparisonTypeDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 16px; padding: 10px 20px;">
+                    Por Conferencias
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
+                    <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Global</a></li>
+                    <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por
+                            Conferencias</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 40px;"></div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h4><u>Clasificación Tradicional</u></h4>
+        </div>
+        <div class="col-md-6">
+            <h4><u>Clasificación Nueva</u></h4>
+        </div>
+    </div>
+
+    <div class="row d-none" id="totalView">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Global</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Contenido para vista "Total" - Clasificación Normal -->
+                    <table class="table" id="norm_classif_table" >
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in norm_classif %}
+                            <tr class="team-row">
+                                <td>{{ loop.index }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Global</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Contenido para vista "Total" - Clasificación Nueva -->
+                    <table class="table" id="new_classif_table" data-aos="flip-right">
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for team in new_classif %}
+                            <tr class="team-row">
+                                <td>{{ loop.index }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="col-md-6">
-                <div class="dropdown">
-                    <button class="btn btn-dark dropdown-toggle" type="button" id="comparisonTypeDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Por Conferencias
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="comparisonTypeDropdown">
-                        <li><a class="dropdown-item comparison-choice" href="#" data-value="total">Global</a></li>
-                        <li><a class="dropdown-item comparison-choice" href="#" data-value="conference">Por
-                                Conferencias</a></li>
-                    </ul>
+
+    <!--Si se elige por conferencia se mostrarán cuatro tablas, dependiendo de si el equipo pertenece al Este o al Oeste-->
+    <!--Necesitamos un contador para la posición porque loop.index no sirve-->
+    <!--El contador (counter) debe ser una lista para poder ser modificado dentro del bucle-->
+    <div class="row" id="conferenceView">
+        <div class="col-md-6">
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header">
+                    <strong>Conferencia Este</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Contenido para Conferencia Este - Clasificación Normal -->
+                    <table class="table" id="norm_classif_east">
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set counter = [0] %}
+                            {% for team in norm_classif %}
+                            {% if team.conference == "East" %}
+                            {% if counter.append(counter.pop() + 1) %}{% endif %}
+                            <tr class="team-row">
+                                <td>{{ counter[0] }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header">
+                    <strong>Conferencia Este</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Contenido para Conferencia Este - Clasificación Nueva -->
+                    <table class="table" id="new_classif_east">
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set counter = [0] %}
+                            {% for team in new_classif %}
+                            {% if team.conference == "East" %}
+                            {% if counter.append(counter.pop() + 1) %}{% endif %}
+                            <tr class="team-row">
+                                <td>{{ counter[0] }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="row d-none" id="totalView">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Clasificación Tradicional - Global</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para vista "Total" - Clasificación Normal -->
-                        <table class="table" id="norm_classif_table" >
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for team in norm_classif %}
-                                <tr class="team-row">
-                                    <td>{{ loop.index }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+        <br>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Conferencia Oeste</strong>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Clasificación Nueva - Global</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para vista "Total" - Clasificación Nueva -->
-                        <table class="table" id="new_classif_table" data-aos="flip-right">
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for team in new_classif %}
-                                <tr class="team-row">
-                                    <td>{{ loop.index }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="card-body">
+                    <!-- Contenido para Conferencia Oeste - Clasificación Normal -->
+                    <table class="table" id="norm_classif_west">
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set counter = [0] %}
+                            {% for team in norm_classif %}
+                            {% if team.conference == "West" %}
+                            {% if counter.append(counter.pop() + 1) %}{% endif %}
+                            <tr class="team-row">
+                                <td>{{ counter[0] }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
-
-        <!--Si se elige por conferencia se mostrarán cuatro tablas, dependiendo de si el equipo pertenece al Este o al Oeste-->
-        <!--Necesitamos un contador para la posición porque loop.index no sirve-->
-        <!--El contador (counter) debe ser una lista para poder ser modificado dentro del bucle-->
-        <div class="row" id="conferenceView">
-            <div class="col-md-6">
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-header">
-                        <strong>Clasificación Tradicional - Conferencia Este</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para Conferencia Este - Clasificación Normal -->
-                        <table class="table" id="norm_classif_east">
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set counter = [0] %}
-                                {% for team in norm_classif %}
-                                {% if team.conference == "East" %}
-                                {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr class="team-row">
-                                    <td>{{ counter[0] }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Conferencia Oeste</strong>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-header">
-                        <strong>Clasificación Nueva - Conferencia Este</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para Conferencia Este - Clasificación Nueva -->
-                        <table class="table" id="new_classif_east">
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set counter = [0] %}
-                                {% for team in new_classif %}
-                                {% if team.conference == "East" %}
-                                {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr class="team-row">
-                                    <td>{{ counter[0] }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Clasificación Tradicional - Conferencia Oeste</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para Conferencia Oeste - Clasificación Normal -->
-                        <table class="table" id="norm_classif_west">
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set counter = [0] %}
-                                {% for team in norm_classif %}
-                                {% if team.conference == "West" %}
-                                {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr class="team-row">
-                                    <td>{{ counter[0] }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>Clasificación Nueva - Conferencia Oeste</strong>
-                    </div>
-                    <div class="card-body">
-                        <!-- Contenido para Conferencia Oeste - Clasificación Nueva -->
-                        <table class="table" id="new_classif_west">
-                            <thead>
-                                <tr>
-                                    <th>Posición</th>
-                                    <th>Equipo</th>
-                                    <th>Logo</th>
-                                    <th>Comparar Equipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set counter = [0] %}
-                                {% for team in new_classif %}
-                                {% if team.conference == "West" %}
-                                {% if counter.append(counter.pop() + 1) %}{% endif %}
-                                <tr class="team-row">
-                                    <td>{{ counter[0] }}</td>
-                                    <td>{{ team.name }}</td>
-                                    <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
-                                    <td>
-                                        <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
-                                            <i class="far fa-square"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="card-body">
+                    <!-- Contenido para Conferencia Oeste - Clasificación Nueva -->
+                    <table class="table" id="new_classif_west">
+                        <thead>
+                            <tr>
+                                <th>Posición</th>
+                                <th>Equipo</th>
+                                <th>Logo</th>
+                                <th>Comparar Equipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set counter = [0] %}
+                            {% for team in new_classif %}
+                            {% if team.conference == "West" %}
+                            {% if counter.append(counter.pop() + 1) %}{% endif %}
+                            <tr class="team-row">
+                                <td>{{ counter[0] }}</td>
+                                <td>{{ team.name }}</td>
+                                <td><img src="{{ team.logo }}" alt="Logo" style="width: 35px; height: 35px;"></td>
+                                <td>
+                                    <button class="btn" onclick="toggleTeamVisibility('{{ team.name }}', this)">
+                                        <i class="far fa-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
 </div>
 
 <!--Sección para los Gráficos de Comparación del rendimiento de cada equipo a lo largo de las distintas temporadas según ambas clasificaciones-->
 <div class="container mt-5">
-    <h4 class="mb-3" data-aos="zoom-in">Comparativa de las Posiciones de los Equipos a lo largo de las Temporadas</h4>
+    <h3 class="mb-3" data-aos="zoom-in">Comparativa de las Posiciones de los Equipos a lo largo de las Temporadas</h3>
 
     <div class="dropdown mb-3">
     <div id="teamDropdownWrapper">
-        <button class="btn btn-dark dropdown-toggle" type="button" id="teamDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-aos="zoom-in">
+        <button class="btn btn-dark dropdown-toggle" type="button" 
+        id="teamDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-aos="zoom-in" style="font-size: 16px; padding: 10px 20px;">
             Seleccionar Equipo
         </button>
         <!-- Contenido del Dropdown -->
         <ul class="dropdown-menu" aria-labelledby="teamDropdown">
-            {% for team in new_classif %}
+            {% for team in teams_sorted %}
             <li><a class="dropdown-item team-choice" href="#" data-value="{{ team.name }}">{{ team.name }}</a></li>
             {% endfor %}
         </ul>
