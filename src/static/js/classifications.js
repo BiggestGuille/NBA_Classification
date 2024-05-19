@@ -330,7 +330,7 @@ function createChart(chartId, positions, title) {
 
     // Añadir el nuevo texto de media
     const mediaText = document.createElement('p');
-    mediaText.textContent = `Media: ${average.toFixed(0)}º`;
+    mediaText.textContent = `Posición Media: ${average.toFixed(0)}º`;
     // Clase para identificarlo
     mediaText.className = 'media-text'; 
     mediaText.style.fontSize = '20px';
