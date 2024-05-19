@@ -59,3 +59,6 @@ docker build -t nba-classif-webapp .
 docker run -p 5000:5000 nba-classif-webapp
 ```
 
+## License 📜
+
+This project is licensed under the terms of the [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
